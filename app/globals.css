@@ -1,0 +1,89 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-inter: "Inter", system-ui, sans-serif;
+    --font-display: "Cormorant Garamond", Georgia, serif;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-ivory text-night font-sans antialiased;
+    font-size: 1.0625rem; /* 17px — lisibilité senior */
+    line-height: 1.65;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-display tracking-tight-48;
+  }
+
+  /* Accessibilité : focus visible partout */
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-gold;
+  }
+
+  ::selection {
+    @apply bg-gold/30 text-night;
+  }
+}
+
+@layer components {
+  /* Container fluide façon Artlist */
+  .container-section {
+    @apply w-full px-4 md:px-6 lg:px-4 xl:px-0 xl:mx-auto xl:max-w-10/12;
+  }
+
+  .container-prose {
+    @apply w-full px-4 md:px-6 xl:px-0 xl:mx-auto xl:max-w-8/12;
+  }
+
+  /* Carte vitrée glassmorphism */
+  .glass-card {
+    @apply rounded-6 backdrop-blur-md border border-white/10 bg-night/20;
+  }
+
+  /* Bouton CTA principal */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-gold-gradient px-6 py-3 font-sans font-semibold text-night transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98];
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-white/20 px-6 py-3 font-sans font-medium text-ivory transition-colors hover:bg-white/10;
+  }
+
+  /* CTA WhatsApp */
+  .btn-whatsapp {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-[#25D366] px-6 py-3 font-sans font-semibold text-white transition-transform hover:scale-[1.02];
+  }
+
+  /* Scroll-snap carousel natif (façon Artlist) */
+  .snap-carousel {
+    @apply flex gap-4 overflow-x-auto snap-x snap-mandatory select-none
+           [-ms-overflow-style:none] [scrollbar-width:none]
+           [&::-webkit-scrollbar]:hidden;
+  }
+
+  .snap-carousel > * {
+    @apply snap-start shrink-0;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  .text-pretty {
+    text-wrap: pretty;
+  }
+}
