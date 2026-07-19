@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { PageHeader } from "@/components/sections/PageHeader";
 import { Reveal, StaggerGroup, StaggerItem } from "@/components/motion/Reveal";
 import { Heart, Eye, Cross, Users } from "lucide-react";
-import { team } from "@/lib/data";
+import { getTeam, type TeamMember } from "@/lib/sanity/queries";
 
 export const metadata: Metadata = {
   title: "À propos",
@@ -17,7 +18,13 @@ const pillars = [
   { icon: Users, title: "Nos valeurs", text: "Amour, prière, fidélité à la Parole, communion fraternelle et engagement au service." },
 ];
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  let team: TeamMember[] = [];
+  try {
+    team = await getTeam();
+  } catch (e) {
+    console.error("[a-propos] Sanity fetch failed:", e);
+  }
   return (
     <>
       <PageHeader
@@ -98,23 +105,40 @@ export default function AboutPage() {
               Les bergers de l'assemblée
             </h2>
           </Reveal>
-          <StaggerGroup className="grid gap-6 sm:grid-cols-2">
-            {team.map((m) => (
-              <StaggerItem
-                key={m.id}
-                className="flex items-start gap-5 rounded-6 border border-night/10 bg-white p-6"
-              >
-                <div className="grid h-20 w-20 shrink-0 place-items-center rounded-full bg-gold-gradient font-display text-3xl font-bold text-night">
-                  {m.name.charAt(0)}
-                </div>
-                <div>
-                  <h3 className="font-display text-xl tracking-tight-48">{m.name}</h3>
-                  <p className="text-sm font-semibold text-gold-600">{m.role}</p>
-                  <p className="mt-2 text-sm text-night/70">{m.bio}</p>
-                </div>
-              </StaggerItem>
-            ))}
-          </StaggerGroup>
+
+          {team.length === 0 ? (
+            <p className="text-center text-night/60">
+              L'équipe pastorale sera publiée prochainement.
+            </p>
+          ) : (
+            <StaggerGroup className="grid gap-6 sm:grid-cols-2">
+              {team.map((m) => (
+                <StaggerItem
+                  key={m._id}
+                  className="flex items-start gap-5 rounded-6 border border-night/10 bg-white p-6"
+                >
+                  {m.photo ? (
+                    <Image
+                      src={m.photo}
+                      alt={m.name}
+                      width={80}
+                      height={80}
+                      className="h-20 w-20 shrink-0 rounded-full object-cover ring-2 ring-gold/30"
+                    />
+                  ) : (
+                    <div className="grid h-20 w-20 shrink-0 place-items-center rounded-full bg-gold-gradient font-display text-3xl font-bold text-night">
+                      {m.name.charAt(0)}
+                    </div>
+                  )}
+                  <div>
+                    <h3 className="font-display text-xl tracking-tight-48">{m.name}</h3>
+                    <p className="text-sm font-semibold text-gold-600">{m.role}</p>
+                    <p className="mt-2 text-sm text-night/70">{m.bio}</p>
+                  </div>
+                </StaggerItem>
+              ))}
+            </StaggerGroup>
+          )}
         </div>
       </section>
     </>
