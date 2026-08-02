@@ -1,15 +1,17 @@
 import Image from "next/image";
 import { Reveal } from "@/components/motion/Reveal";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const DEPARTEMENTS = [
-  { slug: "departement-01", name: "Département 01" },
-  { slug: "departement-02", name: "Département 02" },
-  { slug: "departement-03", name: "Département 03" },
-  { slug: "departement-04", name: "Département 04" },
-  { slug: "departement-05", name: "Département 05" },
-  { slug: "departement-06", name: "Département 06" },
+  { slug: "departement-01" },
+  { slug: "departement-02" },
+  { slug: "departement-03" },
+  { slug: "departement-04" },
+  { slug: "departement-05" },
+  { slug: "departement-06" },
 ];
+
+// Doublé pour une boucle d'animation fluide (translateX -50%)
+const LOOP = [...DEPARTEMENTS, ...DEPARTEMENTS];
 
 export function Departments() {
   return (
@@ -26,38 +28,23 @@ export function Departments() {
       </div>
 
       <Reveal className="relative">
-        <div className="snap-carousel px-4 md:px-6 lg:px-4 xl:px-0">
-          {DEPARTEMENTS.map((d) => (
-            <div
-              key={d.slug}
-              className="group relative w-[80vw] shrink-0 snap-start sm:w-[320px]"
-            >
-              <div className="relative aspect-square overflow-hidden rounded-6 border border-white/10 bg-white/5">
+        <div className="flex items-center gap-5 overflow-hidden px-4 md:gap-6 md:px-6 lg:px-4 xl:px-0">
+          <div className="auto-scroll flex shrink-0 items-center gap-5 md:gap-6">
+            {LOOP.map((d, i) => (
+              <div
+                key={`${d.slug}-${i}`}
+                className="group relative h-24 w-24 shrink-0 overflow-hidden rounded-full border border-white/10 bg-white/5 transition-transform duration-300 hover:scale-110 sm:h-28 sm:w-28 md:h-32 md:w-32"
+              >
                 <Image
                   src={`/${d.slug}.png`}
-                  alt={d.name}
+                  alt={d.slug}
                   fill
-                  sizes="(max-width: 640px) 80vw, 320px"
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  sizes="128px"
+                  className="object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-night/90 via-night/20 to-transparent" />
-                <div className="absolute inset-x-0 bottom-0 p-5 text-center">
-                  <h3 className="font-display text-lg tracking-tight-48 text-ivory">
-                    {d.name}
-                  </h3>
-                </div>
               </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Indicateurs de défilement */}
-        <div className="container-section mt-6 flex items-center justify-center gap-2 text-ivory/40">
-          <ChevronLeft className="h-5 w-5" />
-          <span className="text-xs font-medium uppercase tracking-wider">
-            Faites glisser pour explorer
-          </span>
-          <ChevronRight className="h-5 w-5" />
+            ))}
+          </div>
         </div>
       </Reveal>
     </section>

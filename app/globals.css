@@ -77,6 +77,24 @@
   .snap-carousel > * {
     @apply snap-start shrink-0;
   }
+
+  /* Carrousel à défilement automatique (logos départements) */
+  .auto-scroll {
+    animation: auto-scroll 30s linear infinite;
+  }
+
+  .auto-scroll:hover {
+    animation-play-state: paused;
+  }
+
+  @keyframes auto-scroll {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
 }
 
 @layer utilities {
