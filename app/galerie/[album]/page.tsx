@@ -30,10 +30,10 @@ export default async function AlbumPage({ params }: Props) {
         <div className="container-section">
           <Reveal>
             <Link
-              href="/galerie"
+              href="/activites"
               className="inline-flex items-center gap-2 text-sm text-ivory/60 hover:text-gold"
             >
-              <ArrowLeft className="h-4 w-4" /> Retour à la galerie
+              <ArrowLeft className="h-4 w-4" /> Retour aux activités
             </Link>
             <h1 className="mt-6 font-display text-3xl leading-tight tracking-tight-48 md:text-5xl">
               {album.title}

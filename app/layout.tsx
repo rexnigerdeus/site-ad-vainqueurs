@@ -1,21 +1,19 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Cormorant_Garamond } from "next/font/google";
+import { Poppins } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { WhatsAppFab } from "@/components/layout/WhatsAppFab";
 import { siteConfig, jsonLdOrganization } from "@/lib/site";
 
-const inter = Inter({
+/**
+ * Police corps : Poppins (Google Fonts).
+ * Police titres : Impact (police système, non disponible sur Google Fonts).
+ */
+const poppins = Poppins({
   subsets: ["latin"],
-  variable: "--font-inter",
-  display: "swap",
-});
-
-const display = Cormorant_Garamond({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-display",
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-sans",
   display: "swap",
 });
 
@@ -72,7 +70,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="fr" className={`${inter.variable} ${display.variable}`} suppressHydrationWarning>
+    <html lang="fr" className={poppins.variable} suppressHydrationWarning>
       <body className="min-h-screen bg-night text-ivory">
         <script
           type="application/ld+json"

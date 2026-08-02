@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { PageHeader } from "@/components/sections/PageHeader";
 import { Reveal, StaggerGroup, StaggerItem } from "@/components/motion/Reveal";
-import { Calendar, Clock, MapPin } from "lucide-react";
-import { upcomingEvents } from "@/lib/data";
+import { Calendar, Clock, MapPin, Images } from "lucide-react";
+import { upcomingEvents, albums } from "@/lib/data";
 import { formatDateFr } from "@/lib/utils";
 
 export const metadata: Metadata = {
-  title: "Activités & Programmes",
+  title: "Activités & Galerie",
   description:
-    "Cultes hebdomadaires, étude biblique, veillées d'intercession et événements spéciaux du Temple des Vainqueurs.",
+    "Cultes hebdomadaires, étude biblique, veillées d'intercession, événements spéciaux et albums photos du Temple des Vainqueurs.",
 };
 
 const weeklyProgram = [
@@ -22,9 +23,9 @@ export default function ActivitesPage() {
   return (
     <>
       <PageHeader
-        eyebrow="Activités & Programmes"
+        eyebrow="Activités & Galerie"
         title="Nos cultes et rendez-vous"
-        description="Retrouvez les programmes hebdomadaires, le calendrier des événements et les prochaines conventions de l'église."
+        description="Retrouvez les programmes hebdomadaires, le calendrier des événements, les prochaines conventions et les albums photos de l'église."
       />
 
       {/* Programme hebdo */}
@@ -84,6 +85,52 @@ export default function ActivitesPage() {
                     <MapPin className="h-4 w-4 text-gold" /> {e.location}
                   </span>
                 </div>
+              </StaggerItem>
+            ))}
+          </StaggerGroup>
+        </div>
+      </section>
+
+      {/* Galerie photos */}
+      <section className="bg-ivory py-20 text-night lg:py-28">
+        <div className="container-section">
+          <Reveal className="mb-12">
+            <h2 className="font-display text-3xl tracking-tight-48 md:text-4xl">
+              Galerie — Moments de vie
+            </h2>
+            <p className="mt-3 text-night/60">
+              Revivez les temps forts de l'église : cultes, baptêmes, conventions, camps de jeunes et événements communautaires.
+            </p>
+          </Reveal>
+          <StaggerGroup className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {albums.map((album) => (
+              <StaggerItem key={album.id}>
+                <Link
+                  href={`/galerie/${album.slug}`}
+                  className="group relative block overflow-hidden rounded-6"
+                >
+                  <div className="aspect-[4/3] overflow-hidden bg-night/10">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={album.cover}
+                      alt={album.title}
+                      loading="lazy"
+                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                  </div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-night/90 via-night/30 to-transparent" />
+                  <div className="absolute inset-x-0 bottom-0 p-6 text-ivory">
+                    <span className="inline-flex items-center gap-1 text-xs font-medium text-gold">
+                      <Images className="h-3.5 w-3.5" /> {album.count} médias
+                    </span>
+                    <h3 className="mt-1 font-display text-xl leading-tight tracking-tight-48">
+                      {album.title}
+                    </h3>
+                    <p className="mt-1 text-xs text-ivory/60">
+                      {formatDateFr(album.date)}
+                    </p>
+                  </div>
+                </Link>
               </StaggerItem>
             ))}
           </StaggerGroup>

@@ -30,8 +30,8 @@ export const CHURCH = {
 export const NAV_LINKS = [
   { href: "/", label: "Accueil" },
   { href: "/a-propos", label: "À propos" },
+  { href: "/peniel", label: "Peniel" },
   { href: "/activites", label: "Activités" },
   { href: "/messages", label: "Messages" },
-  { href: "/galerie", label: "Galerie" },
   { href: "/contact", label: "Contact" },
 ] as const;

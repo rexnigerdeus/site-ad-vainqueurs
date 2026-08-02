@@ -4,8 +4,8 @@
 
 @layer base {
   :root {
-    --font-inter: "Inter", system-ui, sans-serif;
-    --font-display: "Cormorant Garamond", Georgia, serif;
+    --font-sans: "Poppins", system-ui, sans-serif;
+    --font-display: Impact, "Haettenschweiler", "Arial Narrow Bold", sans-serif;
   }
 
   * {

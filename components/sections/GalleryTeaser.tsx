@@ -20,7 +20,7 @@ export function GalleryTeaser() {
             </h2>
           </div>
           <Link
-            href="/galerie"
+            href="/activites"
             className="inline-flex items-center gap-2 text-sm font-semibold text-ivory hover:text-gold"
           >
             Voir tous les albums <ArrowRight className="h-4 w-4" />
