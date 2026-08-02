@@ -1,9 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
-import { WhatsAppFab } from "@/components/layout/WhatsAppFab";
 import { siteConfig, jsonLdOrganization } from "@/lib/site";
 
 /**
@@ -76,10 +73,7 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdOrganization) }}
         />
-        <Header />
-        <main className="pt-16 md:pt-20">{children}</main>
-        <Footer />
-        <WhatsAppFab />
+        {children}
       </body>
     </html>
   );

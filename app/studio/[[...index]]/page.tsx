@@ -1,6 +1,5 @@
-import { NextStudio } from "next-sanity/studio";
 import { metadata as studioMetadata, viewport as studioViewport } from "next-sanity/studio";
-import config from "../../../sanity.config";
+import StudioClient from "../StudioClient";
 import type { Metadata, Viewport } from "next";
 
 export const metadata: Metadata = {
@@ -13,5 +12,5 @@ export const viewport: Viewport = {
 };
 
 export default function StudioPage() {
-  return <NextStudio config={config} />;
+  return <StudioClient />;
 }
