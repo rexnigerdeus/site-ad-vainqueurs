@@ -2,11 +2,12 @@
 
 import * as React from "react";
 import { Reveal } from "@/components/motion/Reveal";
-import { Flame } from "lucide-react";
+import Image from "next/image";
 
 /**
  * Section "Événement spécial" — PENIEL 2026.
- * Mois de jeûne et de prière : novembre 2026.
+ * Visuel « Coming soon » en fond (public/peniel-coming-soon.jpg), sans texte HTML visible :
+ * le compteur est posé sous « COMING SOON » (grand écran) ou sous le visuel (mobile/tablette).
  * Compte à rebours avant le 1er novembre 2026.
  * La date cible peut être passée en props depuis un événement Sanity.
  */
@@ -24,16 +25,22 @@ function getTimeLeft(target: Date) {
 
 function Unit({ value, label }: { value: number; label: string }) {
   return (
-    <div className="flex flex-col items-center">
-      <div className="grid h-20 w-20 place-items-center rounded-6 border border-gold/30 bg-night/40 backdrop-blur-md md:h-28 md:w-28">
-        <span className="font-display text-3xl tabular-nums text-gold md:text-5xl">
-          {String(value).padStart(2, "0")}
-        </span>
-      </div>
-      <span className="mt-2 text-xs font-medium uppercase tracking-wider text-ivory/60 md:text-sm">
+    <div className="flex h-16 w-16 flex-col items-center justify-center rounded-6 bg-night shadow-lg shadow-night/30 md:h-20 md:w-20 xl:h-24 xl:w-24">
+      <span className="font-display text-2xl tabular-nums leading-none text-gold md:text-3xl xl:text-4xl">
+        {String(value).padStart(2, "0")}
+      </span>
+      <span className="mt-1 text-[10px] font-semibold uppercase tracking-wider text-ivory md:text-xs">
         {label}
       </span>
     </div>
+  );
+}
+
+function Separator() {
+  return (
+    <span aria-hidden="true" className="font-display text-2xl text-night md:text-3xl xl:text-4xl">
+      :
+    </span>
   );
 }
 
@@ -48,50 +55,48 @@ export function PenielCountdown({ targetDate }: { targetDate?: string }) {
     return () => clearInterval(id);
   }, [PENIEL_DATE]);
 
+  const t = mounted ? timeLeft : { days: 0, hours: 0, minutes: 0, seconds: 0 };
+
   return (
-    <section className="relative overflow-hidden bg-night py-20 lg:py-28">
-      <div className="pointer-events-none absolute -top-40 left-1/3 h-[500px] w-[500px] rounded-full bg-bordeaux/30 blur-[140px]" />
-      <div className="pointer-events-none absolute -bottom-40 right-1/4 h-[400px] w-[400px] rounded-full bg-gold/15 blur-[120px]" />
+    <section aria-labelledby="peniel-title" className="relative overflow-hidden bg-[#F3F1FF]">
+      {/* Le visuel porte tout le texte : on le redonne aux lecteurs d'écran. */}
+      <h2 id="peniel-title" className="sr-only">
+        PENIEL 2026 — Bientôt : mois de jeûne et de prière, novembre 2026
+      </h2>
 
-      <div className="container-section relative">
-        <Reveal className="mx-auto max-w-3xl text-center">
-          <span className="inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-gold">
-            <Flame className="h-3.5 w-3.5" />
-            Événement spécial
-          </span>
-          <h2 className="mt-6 font-display text-4xl leading-none tracking-tight-56 md:text-7xl">
-            PENIEL 2026
-          </h2>
-          <p className="mt-4 text-lg text-ivory/80 md:text-xl">
-            Mois de jeûne et de prière — Novembre
-          </p>
-          <p className="mt-3 text-sm text-ivory/60">
-            « J'ai vu Dieu face à face, et mon âme a été délivrée. » — Genèse 32:30
-          </p>
-        </Reveal>
+      {/* Visuel au ratio 2:1 ; sur grand écran le compteur se pose dessus, sous « COMING SOON ». */}
+      <div className="relative aspect-[2/1] w-full">
+        <Image
+          src="/peniel-coming-soon.jpg"
+          alt=""
+          fill
+          sizes="100vw"
+          className="object-cover"
+        />
+      </div>
 
-        <Reveal className="mt-12" delay={0.15}>
-          <p className="text-center text-sm font-medium uppercase tracking-wider text-ivory/60">
-            Plus que
-          </p>
-          <div className="mt-5 flex items-center justify-center gap-3 md:gap-5">
-            <Unit value={mounted ? timeLeft.days : 0} label="Jours" />
-            <span className="font-display text-3xl text-gold/60 md:text-5xl">:</span>
-            <Unit value={mounted ? timeLeft.hours : 0} label="Heures" />
-            <span className="font-display text-3xl text-gold/60 md:text-5xl">:</span>
-            <Unit value={mounted ? timeLeft.minutes : 0} label="Min" />
-            <span className="font-display text-3xl text-gold/60 md:text-5xl">:</span>
-            <Unit value={mounted ? timeLeft.seconds : 0} label="Sec" />
-          </div>
-        </Reveal>
-
-        {timeLeft.total === 0 && (
-          <Reveal className="mt-10 text-center">
-            <p className="font-display text-2xl text-gold md:text-3xl">
-              C'est l'heure du combat spirituel ! 🙏
+      <div className="py-6 lg:absolute lg:inset-x-0 lg:top-[55%] lg:py-0">
+        <Reveal delay={0.15}>
+          {timeLeft.total === 0 ? (
+            <p className="mx-auto w-fit rounded-6 bg-night px-6 py-3 text-center font-display text-2xl text-gold md:text-3xl">
+              C&apos;est l&apos;heure du combat spirituel ! 🙏
             </p>
-          </Reveal>
-        )}
+          ) : (
+            <div
+              role="timer"
+              aria-label={`Début dans ${t.days} jours, ${t.hours} heures et ${t.minutes} minutes`}
+              className="flex items-center justify-center gap-2 md:gap-3"
+            >
+              <Unit value={t.days} label="Jours" />
+              <Separator />
+              <Unit value={t.hours} label="Heures" />
+              <Separator />
+              <Unit value={t.minutes} label="Min" />
+              <Separator />
+              <Unit value={t.seconds} label="Sec" />
+            </div>
+          )}
+        </Reveal>
       </div>
     </section>
   );
