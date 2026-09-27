@@ -23,6 +23,7 @@ export type ResolvedSettings = {
   social: { youtube: string; facebook: string };
   donations: { wave: string; orangeMoney: string };
   serviceHours: string;
+  mapQuery: string;
 };
 
 const FALLBACK: ResolvedSettings = {
@@ -40,6 +41,7 @@ const FALLBACK: ResolvedSettings = {
   social: { ...CHURCH.social },
   donations: { ...CHURCH.donations },
   serviceHours: "Dimanche 9h00 · Mercredi 18h00 · Vendredi 18h00",
+  mapQuery: "Vridi Port-Bouet Abidjan",
 };
 
 export async function getSettings(): Promise<ResolvedSettings> {
@@ -67,6 +69,7 @@ export async function getSettings(): Promise<ResolvedSettings> {
         orangeMoney: s.donations?.orangeMoney || FALLBACK.donations.orangeMoney,
       },
       serviceHours: s.serviceHours || FALLBACK.serviceHours,
+      mapQuery: s.mapQuery || s.address || FALLBACK.mapQuery,
     };
   } catch (e) {
     console.error("[getSettings] Sanity fetch failed:", e);

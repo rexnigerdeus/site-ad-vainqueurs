@@ -1,25 +1,33 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { Play, ArrowRight } from "lucide-react";
 import { PageHeader } from "@/components/sections/PageHeader";
 import { Reveal, StaggerGroup, StaggerItem } from "@/components/motion/Reveal";
-import { getSermons, type Sermon } from "@/lib/sanity/queries";
+import { getSermons, getPageContent, type Sermon } from "@/lib/sanity/queries";
+import { getSettings } from "@/lib/sanity/settings";
+import { pageMetadata } from "@/lib/sanity/metadata";
 import { formatDateFr } from "@/lib/utils";
 
-export const metadata: Metadata = {
-  title: "Messages & Prédications",
-  description:
-    "Cultes en direct et rediffusions du Temple des Vainqueurs — depuis notre chaîne YouTube.",
-};
+export function generateMetadata() {
+  return pageMetadata("messages", {
+    title: "Messages & Prédications",
+    description:
+      "Cultes en direct et rediffusions du Temple des Vainqueurs — depuis notre chaîne YouTube.",
+  });
+}
 
 export default async function MessagesPage() {
-  const sermons = await getSermons(12).catch(() => [] as Sermon[]);
+  const [sermons, content, settings] = await Promise.all([
+    getSermons(12).catch(() => [] as Sermon[]),
+    getPageContent("messages").catch(() => null),
+    getSettings(),
+  ]);
+  const header = content?.header;
   return (
     <>
       <PageHeader
-        eyebrow="Cultes en direct & rediffusions"
-        title="Nourrissez votre âme"
-        description="Retrouvez les derniers cultes en direct et en rediffusion du Temple des Vainqueurs, depuis notre chaîne YouTube."
+        eyebrow={header?.eyebrow || "Cultes en direct & rediffusions"}
+        title={header?.title || "Nourrissez votre âme"}
+        description={header?.description || "Retrouvez les derniers cultes en direct et en rediffusion du Temple des Vainqueurs, depuis notre chaîne YouTube."}
       />
 
       {/* Liste des derniers lives */}
@@ -30,9 +38,9 @@ export default async function MessagesPage() {
               Derniers cultes
             </h2>
             <p className="mt-2 text-night/60">
-              Les 5 dernières rediffusions depuis{" "}
+              Les dernières rediffusions depuis{" "}
               <a
-                href="https://www.youtube.com/@advainqueurs/streams"
+                href={settings.social.youtube}
                 target="_blank"
                 rel="noreferrer"
                 className="font-semibold text-gold-600 hover:underline"
@@ -49,9 +57,9 @@ export default async function MessagesPage() {
                   className="group block overflow-hidden rounded-6 border border-night/10 bg-white transition-all hover:shadow-xl"
                 >
                   <div className="relative aspect-video overflow-hidden bg-night/10">
-                    {s.youtubeId ? (
+                    {s.thumbnail || s.youtubeId ? (
                       <img
-                        src={`https://img.youtube.com/vi/${s.youtubeId}/hqdefault.jpg`}
+                        src={s.thumbnail || `https://img.youtube.com/vi/${s.youtubeId}/hqdefault.jpg`}
                         alt={s.title}
                         loading="lazy"
                         className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"

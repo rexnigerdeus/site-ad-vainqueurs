@@ -104,6 +104,13 @@ export default defineType({
       description: "Ex : Dimanche 9h00 · Mercredi 18h00 · Vendredi 18h00",
       initialValue: "Dimanche 9h00 · Mercredi 18h00 · Vendredi 18h00",
     }),
+    defineField({
+      name: "mapQuery",
+      title: "Recherche Google Maps",
+      type: "string",
+      description:
+        "Texte utilisé pour placer la carte de la page Contact (ex : Vridi Port-Bouet Abidjan). Vide = adresse ci-dessus.",
+    }),
   ],
   preview: {
     select: { title: "name" },

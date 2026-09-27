@@ -1,16 +1,18 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHeader } from "@/components/sections/PageHeader";
 import { Reveal, StaggerGroup, StaggerItem } from "@/components/motion/Reveal";
 import { Calendar, Clock, MapPin, Images } from "lucide-react";
-import { getUpcomingEvents, getAlbums, getWeeklyProgram, type Event, type Album, type WeeklyProgramItem } from "@/lib/sanity/queries";
+import { getUpcomingEvents, getAlbums, getWeeklyProgram, getPageContent, type Event, type Album, type WeeklyProgramItem } from "@/lib/sanity/queries";
+import { pageMetadata } from "@/lib/sanity/metadata";
 import { formatDateFr } from "@/lib/utils";
 
-export const metadata: Metadata = {
-  title: "Activités & Galerie",
-  description:
-    "Cultes hebdomadaires, étude biblique, veillées d'intercession, événements spéciaux et albums photos du Temple des Vainqueurs.",
-};
+export function generateMetadata() {
+  return pageMetadata("activities", {
+    title: "Activités & Galerie",
+    description:
+      "Cultes hebdomadaires, étude biblique, veillées d'intercession, événements spéciaux et albums photos du Temple des Vainqueurs.",
+  });
+}
 
 const FALLBACK_PROGRAM: WeeklyProgramItem[] = [
   { _id: "w1", day: "Dimanche", time: "09h00", title: "Culte dominical", description: "Louange, adoration et prédication." },
@@ -20,19 +22,21 @@ const FALLBACK_PROGRAM: WeeklyProgramItem[] = [
 ];
 
 export default async function ActivitesPage() {
-  const [events, albums, weeklyProgram] = await Promise.all([
+  const [events, albums, weeklyProgram, content] = await Promise.all([
     getUpcomingEvents(6).catch(() => [] as Event[]),
     getAlbums().catch(() => [] as Album[]),
     getWeeklyProgram().catch(() => [] as WeeklyProgramItem[]),
+    getPageContent("activities").catch(() => null),
   ]);
 
   const program = weeklyProgram.length ? weeklyProgram : FALLBACK_PROGRAM;
+  const header = content?.header;
   return (
     <>
       <PageHeader
-        eyebrow="Activités & Galerie"
-        title="Nos cultes et rendez-vous"
-        description="Retrouvez les programmes hebdomadaires, le calendrier des événements, les prochaines conventions et les albums photos de l'église."
+        eyebrow={header?.eyebrow || "Activités & Galerie"}
+        title={header?.title || "Nos cultes et rendez-vous"}
+        description={header?.description || "Retrouvez les programmes hebdomadaires, le calendrier des événements, les prochaines conventions et les albums photos de l'église."}
       />
 
       {/* Programme hebdo */}
@@ -44,9 +48,9 @@ export default async function ActivitesPage() {
             </h2>
           </Reveal>
           <StaggerGroup className="grid gap-4 md:grid-cols-2">
-            {weeklyProgram.map((p) => (
+            {program.map((p) => (
               <StaggerItem
-                key={p.title}
+                key={p._id}
                 className="flex flex-col gap-3 rounded-6 border border-night/10 bg-white p-6 sm:flex-row sm:items-center"
               >
                 <div className="flex w-32 shrink-0 flex-col">

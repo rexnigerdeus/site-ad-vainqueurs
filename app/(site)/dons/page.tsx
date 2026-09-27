@@ -1,15 +1,17 @@
-import type { Metadata } from "next";
 import { Heart, Smartphone } from "lucide-react";
 import { PageHeader } from "@/components/sections/PageHeader";
 import { Reveal } from "@/components/motion/Reveal";
 import { getSettings } from "@/lib/sanity/settings";
 import { getPageContent } from "@/lib/sanity/queries";
+import { pageMetadata } from "@/lib/sanity/metadata";
 
-export const metadata: Metadata = {
-  title: "Dons",
-  description:
-    "Soutenez le ministère du Temple des Vainqueurs par Wave ou Orange Money.",
-};
+export function generateMetadata() {
+  return pageMetadata("donations", {
+    title: "Dons",
+    description:
+      "Soutenez le ministère du Temple des Vainqueurs par Wave ou Orange Money.",
+  });
+}
 
 export default async function DonsPage() {
   const [s, content] = await Promise.all([
@@ -19,9 +21,9 @@ export default async function DonsPage() {
   return (
     <>
       <PageHeader
-        eyebrow="Dons en ligne"
-        title="Soutenez le ministère"
-        description="Votre générosité permet à l'église de poursuivre son œuvre d'évangélisation, d'enseignement et d'entraide communautaire."
+        eyebrow={content?.header?.eyebrow || "Dons en ligne"}
+        title={content?.header?.title || "Soutenez le ministère"}
+        description={content?.header?.description || "Votre générosité permet à l'église de poursuivre son œuvre d'évangélisation, d'enseignement et d'entraide communautaire."}
       />
 
       <section className="bg-night py-20 lg:py-28">

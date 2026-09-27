@@ -4,9 +4,15 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/motion/Reveal";
 import { formatDateFr } from "@/lib/utils";
-import type { Event } from "@/lib/sanity/queries";
+import type { Event, PageContent } from "@/lib/sanity/queries";
 
-export function Hero({ nextEvent }: { nextEvent?: Event | null }) {
+export function Hero({
+  nextEvent,
+  header,
+}: {
+  nextEvent?: Event | null;
+  header?: PageContent["header"];
+}) {
   return (
     <section id="hero" className="relative overflow-hidden bg-night-gradient">
       {/* Décor lumineux */}
@@ -24,25 +30,28 @@ export function Hero({ nextEvent }: { nextEvent?: Event | null }) {
                 height={18}
                 className="h-[18px] w-[18px] rounded-full object-cover"
               />
-              Bienvenue au Temple des Vainqueurs
+              {header?.eyebrow || "Bienvenue au Temple des Vainqueurs"}
             </p>
           </Reveal>
 
           <Reveal delay={0.1}>
             <h1 className="font-display text-4xl leading-[1.05] tracking-tight-56 text-ivory sm:text-5xl md:text-6xl lg:text-7xl 2.5xl:text-8xl">
-              Une communauté qui{" "}
-              <span className="bg-gold-gradient bg-clip-text text-transparent">
-                vainc
-              </span>{" "}
-              par la foi
+              {header?.title || (
+                <>
+                  Une communauté qui{" "}
+                  <span className="bg-gold-gradient bg-clip-text text-transparent">
+                    vainc
+                  </span>{" "}
+                  par la foi
+                </>
+              )}
             </h1>
           </Reveal>
 
           <Reveal delay={0.2}>
             <p className="mx-auto mt-6 max-w-2xl text-lg text-ivory/70 md:text-xl">
-              Temple des Assemblées de Dieu — Abidjan, Port-Bouët (Vridi).
-              Cultes, prédications, enseignements et vie communautaire
-              au nom de Christ.
+              {header?.description ||
+                "Temple des Assemblées de Dieu — Abidjan, Port-Bouët (Vridi). Cultes, prédications, enseignements et vie communautaire au nom de Christ."}
             </p>
           </Reveal>
 

@@ -52,7 +52,7 @@ export async function getSermons(limit = 12) {
   return sanityClient.fetch<Sermon[]>(
     `*[_type == "sermon"] | order(date desc) [0...$limit] {
       _id, title, slug, date, preacher, type, duration, theme, "youtubeId": youtubeId,
-      excerpt, featured
+      "thumbnail": thumbnail.asset->url, excerpt, featured
     }`,
     { limit },
     { next: { revalidate: 300 } }
@@ -62,7 +62,8 @@ export async function getSermons(limit = 12) {
 export async function getSermonBySlug(slug: string) {
   return sanityClient.fetch<Sermon | null>(
     `*[_type == "sermon" && slug.current == $slug][0] {
-      _id, title, slug, date, preacher, type, duration, theme, youtubeId, audioFile, body, excerpt
+      _id, title, slug, date, preacher, type, duration, theme, youtubeId,
+      "thumbnail": thumbnail.asset->url, "audioUrl": audioFile.asset->url, body, excerpt
     }`,
     { slug },
     { next: { revalidate: 300 } }
@@ -72,7 +73,8 @@ export async function getSermonBySlug(slug: string) {
 export async function getFeaturedSermons(limit = 4) {
   return sanityClient.fetch<Sermon[]>(
     `*[_type == "sermon" && featured == true] | order(date desc) [0...$limit] {
-      _id, title, slug, date, preacher, type, duration, theme, youtubeId, excerpt
+      _id, title, slug, date, preacher, type, duration, theme, youtubeId,
+      "thumbnail": thumbnail.asset->url, excerpt
     }`,
     { limit },
     { next: { revalidate: 300 } }
@@ -128,7 +130,9 @@ export async function getFaqs() {
 export async function getPageContent(page: string) {
   return sanityClient.fetch<PageContent | null>(
     `*[_type == "pageContent" && page == $page][0] {
-      _id, page, heroTitle, heroDescription, values, quote, body, seo
+      _id, page, header, heroTitle, heroDescription, values, quote, body,
+      programme, verses, eventInfo,
+      seo { title, description, "ogImage": ogImage.asset->url }
     }`,
     { page },
     { next: { revalidate: 3600 } }
@@ -140,7 +144,7 @@ export async function getSiteSettings() {
   return sanityClient.fetch<SiteSettings | null>(
     `*[_type == "siteSettings"][0] {
       _id, name, fullName, denomination, quartier, commune, city, country,
-      address, phone, whatsapp, email, social, donations, serviceHours
+      address, phone, whatsapp, email, social, donations, serviceHours, mapQuery
     }`,
     {},
     { next: { revalidate: 3600 } }
@@ -214,7 +218,8 @@ export type Sermon = {
   duration: string;
   theme: string;
   youtubeId?: string;
-  audioFile?: { asset: { url: string } };
+  thumbnail?: string;
+  audioUrl?: string;
   body?: any[];
   excerpt?: string;
   featured?: boolean;
@@ -245,12 +250,16 @@ export type FaqItem = { _id: string; q: string; a: string };
 export type PageContent = {
   _id: string;
   page: string;
+  header?: { eyebrow?: string; title?: string; description?: string };
   heroTitle?: string;
   heroDescription?: string;
   values?: { icon: string; title: string; text: string }[];
   quote?: { text: string; reference: string };
   body?: any[];
-  seo?: { title?: string; description?: string };
+  programme?: { day: string; time: string; title: string; description?: string }[];
+  verses?: { text: string; reference: string }[];
+  eventInfo?: { dates?: string; audience?: string };
+  seo?: { title?: string; description?: string; ogImage?: string };
 };
 
 export type SiteSettings = {
@@ -269,6 +278,7 @@ export type SiteSettings = {
   social?: { youtube?: string; facebook?: string };
   donations?: { wave?: string; orangeMoney?: string };
   serviceHours?: string;
+  mapQuery?: string;
 };
 
 export type WeeklyProgramItem = {

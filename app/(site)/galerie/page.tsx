@@ -1,25 +1,31 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { Images } from "lucide-react";
 import { PageHeader } from "@/components/sections/PageHeader";
 import { Reveal, StaggerGroup, StaggerItem } from "@/components/motion/Reveal";
-import { getAlbums, type Album } from "@/lib/sanity/queries";
+import { getAlbums, getPageContent, type Album } from "@/lib/sanity/queries";
+import { pageMetadata } from "@/lib/sanity/metadata";
 import { formatDateFr } from "@/lib/utils";
 
-export const metadata: Metadata = {
-  title: "Galerie multimédia",
-  description:
-    "Albums photos et vidéos des activités, cultes et moments forts du Temple des Vainqueurs.",
-};
+export function generateMetadata() {
+  return pageMetadata("gallery", {
+    title: "Galerie multimédia",
+    description:
+      "Albums photos et vidéos des activités, cultes et moments forts du Temple des Vainqueurs.",
+  });
+}
 
 export default async function GaleriePage() {
-  const albums = await getAlbums().catch(() => [] as Album[]);
+  const [albums, content] = await Promise.all([
+    getAlbums().catch(() => [] as Album[]),
+    getPageContent("gallery").catch(() => null),
+  ]);
+  const header = content?.header;
   return (
     <>
       <PageHeader
-        eyebrow="Galerie"
-        title="Moments de vie"
-        description="Revivez les temps forts de l'église : cultes, baptêmes, conventions, camps de jeunes et événements communautaires."
+        eyebrow={header?.eyebrow || "Galerie"}
+        title={header?.title || "Moments de vie"}
+        description={header?.description || "Revivez les temps forts de l'église : cultes, baptêmes, conventions, camps de jeunes et événements communautaires."}
       />
 
       <section className="bg-ivory py-20 text-night lg:py-28">

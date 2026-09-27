@@ -12,11 +12,10 @@ const FALLBACK_DEPARTMENTS = [
 ];
 
 export function Departments({ departments }: { departments?: Department[] }) {
-  // Si Sanity a des départements avec logo, on les utilise ; sinon fallback images locales
-  const hasLogos = departments?.length && departments.some((d) => d.logo);
-  const items = hasLogos
-    ? departments!.map((d) => ({ _id: d._id, logo: d.logo, name: d.name }))
-    : FALLBACK_DEPARTMENTS.map((d) => ({ _id: d._id, slug: (d as any).slug }));
+  // Départements Sanity s'il y en a ; sinon fallback images locales
+  const items = departments?.length
+    ? departments.map((d) => ({ _id: d._id, logo: d.logo, name: d.name, description: d.description }))
+    : FALLBACK_DEPARTMENTS;
 
   // Doublé pour une boucle d'animation fluide (translateX -50%)
   const LOOP = [...items, ...items];
@@ -40,15 +39,22 @@ export function Departments({ departments }: { departments?: Department[] }) {
             {LOOP.map((d: any, i) => (
               <div
                 key={`${d._id}-${i}`}
+                title={d.name ? [d.name, d.description].filter(Boolean).join(" — ") : undefined}
                 className="group relative h-24 w-24 shrink-0 overflow-hidden rounded-full border border-white/10 bg-white/5 transition-transform duration-300 hover:scale-110 sm:h-28 sm:w-28 md:h-32 md:w-32"
               >
-                <Image
-                  src={d.logo || `/${d.slug}.png`}
-                  alt={d.name || d.slug}
-                  fill
-                  sizes="128px"
-                  className="object-cover"
-                />
+                {d.logo || d.slug ? (
+                  <Image
+                    src={d.logo || `/${d.slug}.png`}
+                    alt={d.name || d.slug}
+                    fill
+                    sizes="128px"
+                    className="object-cover"
+                  />
+                ) : (
+                  <span className="grid h-full w-full place-items-center p-3 text-center font-display text-sm leading-tight text-gold">
+                    {d.name}
+                  </span>
+                )}
               </div>
             ))}
           </div>

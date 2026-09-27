@@ -20,7 +20,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!sermon) return { title: "Prédication introuvable" };
   return {
     title: sermon.title,
-    description: `Prédication du ${formatDateFr(sermon.date)} par ${sermon.preacher} — ${sermon.theme}.`,
+    description:
+      sermon.excerpt || `Prédication du ${formatDateFr(sermon.date)} par ${sermon.preacher} — ${sermon.theme}.`,
+    ...(sermon.thumbnail && { openGraph: { images: [{ url: sermon.thumbnail }] } }),
   };
 }
 
@@ -70,23 +72,23 @@ export default async function SermonDetailPage({ params }: Props) {
                 className="h-full w-full"
               />
             </div>
-          ) : sermon.type === "audio" && sermon.audioFile?.asset?.url ? (
+          ) : sermon.audioUrl ? (
             <div className="rounded-6 bg-night p-8 text-ivory">
               <p className="mb-4 text-ivory/70">Lecteur audio</p>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
               <audio controls className="w-full">
-                <source src={sermon.audioFile.asset.url} />
+                <source src={sermon.audioUrl} />
               </audio>
             </div>
-          ) : sermon.body && sermon.body.length > 0 ? (
-            <div className="prose max-w-none rounded-6 bg-white p-8">
-              <PortableText value={sermon.body} />
-            </div>
-          ) : (
+          ) : !sermon.body?.length ? (
             <div className="prose rounded-6 bg-white p-8">
               <p className="text-night/70">
                 Contenu de la prédication à venir.
               </p>
+            </div>
+          ) : null}
+          {sermon.body && sermon.body.length > 0 && (
+            <div className="prose mt-8 max-w-none rounded-6 bg-white p-8 first:mt-0">
+              <PortableText value={sermon.body} />
             </div>
           )}
         </div>

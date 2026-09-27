@@ -1,16 +1,11 @@
 import Link from "next/link";
-import { ArrowRight, Heart, Users, BookOpen, HandHeart } from "lucide-react";
+import { ArrowRight, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Reveal, StaggerGroup, StaggerItem } from "@/components/motion/Reveal";
+import { valueIcons } from "@/lib/icons";
 
 type Value = { icon: string; title: string; text: string };
 
-const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
-  Heart,
-  HandHeart,
-  BookOpen,
-  Users,
-};
 
 const FALLBACK_VALUES: Value[] = [
   { icon: "Heart", title: "Amour", text: "Aimer Dieu et son prochain, à l'image du Christ." },
@@ -57,7 +52,7 @@ export function AboutTeaser({
 
         <StaggerGroup className="grid gap-4 sm:grid-cols-2">
           {vals.map((v) => {
-            const Icon = iconMap[v.icon] || Heart;
+            const Icon = valueIcons[v.icon] || Heart;
             return (
             <StaggerItem
               key={v.title}

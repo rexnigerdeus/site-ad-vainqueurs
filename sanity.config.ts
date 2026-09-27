@@ -42,10 +42,6 @@ export default defineConfig({
             S.listItem().title("Départements").child(S.documentTypeList("department").title("Départements")),
             S.listItem().title("Témoignages").child(S.documentTypeList("testimonial").title("Témoignages")),
             S.listItem().title("Contenus de pages").child(S.documentTypeList("pageContent").title("Contenus de pages")),
-            S.divider(),
-            S.listItem()
-              .title("Médias")
-              .child(S.document().schemaType("media").documentId("media")),
           ]),
     }),
     visionTool(),

@@ -21,6 +21,16 @@ import {
   getPenielEvent,
 } from "@/lib/sanity/queries";
 import { getSettings } from "@/lib/sanity/settings";
+import type { Metadata } from "next";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const seo = (await getPageContent("home").catch(() => null))?.seo;
+  return {
+    ...(seo?.title && { title: { absolute: seo.title } }),
+    ...(seo?.description && { description: seo.description }),
+    ...(seo?.ogImage && { openGraph: { images: [{ url: seo.ogImage }] } }),
+  };
+}
 
 export default async function HomePage() {
   // Fetch parallèle — toutes les sections avec fallback gracieux
@@ -50,7 +60,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <Hero nextEvent={events[0]} />
+      <Hero nextEvent={events[0]} header={homeContent?.header} />
       <UpcomingEvents events={events} />
       <PenielCountdown targetDate={penielEvent?.date} />
       <AboutTeaser

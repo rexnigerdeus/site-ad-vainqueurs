@@ -12,9 +12,9 @@ function SermonCard({ sermon }: { sermon: Sermon }) {
     <Card className="group overflow-hidden border-white/10 bg-night/40 p-0 transition-all hover:border-gold/40 hover:bg-night/60">
       {/* Thumbnail */}
       <div className="relative aspect-video overflow-hidden bg-night/60">
-        {sermon.youtubeId ? (
+        {sermon.thumbnail || sermon.youtubeId ? (
           <img
-            src={`https://img.youtube.com/vi/${sermon.youtubeId}/hqdefault.jpg`}
+            src={sermon.thumbnail || `https://img.youtube.com/vi/${sermon.youtubeId}/hqdefault.jpg`}
             alt={sermon.title}
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
             loading="lazy"

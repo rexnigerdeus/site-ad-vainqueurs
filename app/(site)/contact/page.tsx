@@ -1,25 +1,32 @@
-import type { Metadata } from "next";
 import { MapPin, Phone, Mail, Clock, Youtube, Facebook } from "lucide-react";
 import { PageHeader } from "@/components/sections/PageHeader";
 import { Reveal } from "@/components/motion/Reveal";
 import { ContactForm } from "@/components/sections/ContactForm";
 import { Button } from "@/components/ui/button";
 import { getSettings } from "@/lib/sanity/settings";
+import { getPageContent } from "@/lib/sanity/queries";
+import { pageMetadata } from "@/lib/sanity/metadata";
 
-export const metadata: Metadata = {
-  title: "Contact",
-  description:
-    "Contactez le Temple des Vainqueurs — formulaire, téléphone, WhatsApp, adresse à Vridi, Port-Bouët, Abidjan.",
-};
+export function generateMetadata() {
+  return pageMetadata("contact", {
+    title: "Contact",
+    description:
+      "Contactez le Temple des Vainqueurs — formulaire, téléphone, WhatsApp, adresse à Vridi, Port-Bouët, Abidjan.",
+  });
+}
 
 export default async function ContactPage() {
-  const s = await getSettings();
+  const [s, content] = await Promise.all([
+    getSettings(),
+    getPageContent("contact").catch(() => null),
+  ]);
+  const header = content?.header;
   return (
     <>
       <PageHeader
-        eyebrow="Contact"
-        title="Prenons contact"
-        description="Une question, une demande de prière, ou envie de nous visiter ? Écrivez-nous ou passez nous voir au temple."
+        eyebrow={header?.eyebrow || "Contact"}
+        title={header?.title || "Prenons contact"}
+        description={header?.description || "Une question, une demande de prière, ou envie de nous visiter ? Écrivez-nous ou passez nous voir au temple."}
       />
 
       <section className="bg-night py-20 lg:py-28">
@@ -102,7 +109,7 @@ export default async function ContactPage() {
             <div className="mt-8 overflow-hidden rounded-6 border border-white/10">
               <iframe
                 title="Localisation du temple"
-                src="https://www.google.com/maps?q=Vridi+Port-Bouet+Abidjan&output=embed"
+                src={`https://www.google.com/maps?q=${encodeURIComponent(s.mapQuery)}&output=embed`}
                 className="h-64 w-full"
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"

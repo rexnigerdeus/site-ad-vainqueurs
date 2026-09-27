@@ -1,23 +1,19 @@
-import type { Metadata } from "next";
 import Image from "next/image";
 import { PageHeader } from "@/components/sections/PageHeader";
 import { Reveal, StaggerGroup, StaggerItem } from "@/components/motion/Reveal";
-import { Heart, Eye, Cross, Users } from "lucide-react";
+import { Cross } from "lucide-react";
 import { getTeam, getPageContent, type TeamMember, type PageContent } from "@/lib/sanity/queries";
+import { pageMetadata } from "@/lib/sanity/metadata";
+import { valueIcons } from "@/lib/icons";
 import { PortableText } from "@portabletext/react";
 
-export const metadata: Metadata = {
-  title: "À propos",
-  description:
-    "Histoire, vision, mission et équipe pastorale du Temple des Vainqueurs — Assemblées de Dieu, Abidjan Port-Bouët.",
-};
-
-const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
-  Cross,
-  Eye,
-  Heart,
-  Users,
-};
+export function generateMetadata() {
+  return pageMetadata("about", {
+    title: "À propos",
+    description:
+      "Histoire, vision, mission et équipe pastorale du Temple des Vainqueurs — Assemblées de Dieu, Abidjan Port-Bouët.",
+  });
+}
 
 const FALLBACK_PILLARS = [
   { icon: "Cross", title: "Notre foi", text: "Nous croyons en la Bible, parole inspirée de Dieu, en Jésus-Christ seul sauveur, et en l'action du Saint-Esprit." },
@@ -34,12 +30,13 @@ export default async function AboutPage() {
 
   const pillars = pageContent?.values?.length ? pageContent.values : FALLBACK_PILLARS;
   const quote = pageContent?.quote;
+  const header = pageContent?.header;
   return (
     <>
       <PageHeader
-        eyebrow="À propos"
-        title="Une église. Une famille. Une mission."
-        description="Le Temple des Vainqueurs est une assemblée des Assemblées de Dieu implantée à Abidjan, Port-Bouët (Vridi). Découvrez notre histoire, notre vision et l'équipe pastorale qui sert la communauté."
+        eyebrow={header?.eyebrow || "À propos"}
+        title={header?.title || "Une église. Une famille. Une mission."}
+        description={header?.description || "Le Temple des Vainqueurs est une assemblée des Assemblées de Dieu implantée à Abidjan, Port-Bouët (Vridi). Découvrez notre histoire, notre vision et l'équipe pastorale qui sert la communauté."}
       />
 
       {/* Histoire */}
@@ -99,7 +96,7 @@ export default async function AboutPage() {
           </Reveal>
           <StaggerGroup className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {pillars.map((p) => {
-            const Icon = iconMap[p.icon] || Cross;
+            const Icon = valueIcons[p.icon] || Cross;
             return (
             <StaggerItem key={p.title} className="glass-card rounded-6 p-6">
               <Icon className="h-8 w-8 text-gold" />

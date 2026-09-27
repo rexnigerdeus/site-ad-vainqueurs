@@ -1,28 +1,31 @@
-import type { Metadata } from "next";
 import { PageHeader } from "@/components/sections/PageHeader";
 import { PenielCountdown } from "@/components/sections/PenielCountdown";
 import { Reveal } from "@/components/motion/Reveal";
 import { Flame, Calendar, Clock, MapPin, BookOpen, Users } from "lucide-react";
 import { getSettings } from "@/lib/sanity/settings";
 import { getPageContent, getPenielEvent, type PageContent } from "@/lib/sanity/queries";
+import { pageMetadata } from "@/lib/sanity/metadata";
+import { PortableText } from "@portabletext/react";
 
-export const metadata: Metadata = {
-  title: "PENIEL 2026",
-  description:
-    "PENIEL 2026 — Mois de jeûne et de prière du Temple des Vainqueurs. Du 1er au 30 novembre 2026.",
-};
+export function generateMetadata() {
+  return pageMetadata("peniel", {
+    title: "PENIEL 2026",
+    description:
+      "PENIEL 2026 — Mois de jeûne et de prière du Temple des Vainqueurs. Du 1er au 30 novembre 2026.",
+  });
+}
 
 const FALLBACK_PROGRAMME = [
-  { day: "1er Nov.", title: "Culte d'ouverture", desc: "Lancement du mois de jeûne et d'intercession.", time: "18h00" },
-  { day: "Chaque jour", title: "Temps de prière", desc: "Intercession personnelle et communautaire.", time: "05h30 & 18h00" },
-  { day: "Tous les vendredis", title: "Veillée d'intercession", desc: "Nuit de prière communautaire.", time: "18h00" },
-  { day: "30 Nov.", title: "Culte d'action de grâces", desc: "Clôture du mois de jeûne et de prière.", time: "18h00" },
+  { day: "1er Nov.", title: "Culte d'ouverture", description: "Lancement du mois de jeûne et d'intercession.", time: "18h00" },
+  { day: "Chaque jour", title: "Temps de prière", description: "Intercession personnelle et communautaire.", time: "05h30 & 18h00" },
+  { day: "Tous les vendredis", title: "Veillée d'intercession", description: "Nuit de prière communautaire.", time: "18h00" },
+  { day: "30 Nov.", title: "Culte d'action de grâces", description: "Clôture du mois de jeûne et de prière.", time: "18h00" },
 ];
 
-const FALLBACK_VERSEMENTS = [
-  { ref: "Genèse 32:30", text: "« Jacob appela ce lieu du nom de Peniel : J'ai vu Dieu face à face, et mon âme a été délivrée. »" },
-  { ref: "Matthieu 17:21", text: "« Cette sorte de démon ne sort que par la prière et le jeûne. »" },
-  { ref: "Ésaïe 58:6", text: "« Voici le jeûne que je préfère : dénouer les chaînes de la méchanceté, détacher les liens du joug. »" },
+const FALLBACK_VERSES = [
+  { reference: "Genèse 32:30", text: "Jacob appela ce lieu du nom de Peniel : J'ai vu Dieu face à face, et mon âme a été délivrée." },
+  { reference: "Matthieu 17:21", text: "Cette sorte de démon ne sort que par la prière et le jeûne." },
+  { reference: "Ésaïe 58:6", text: "Voici le jeûne que je préfère : dénouer les chaînes de la méchanceté, détacher les liens du joug." },
 ];
 
 export default async function PenielPage() {
@@ -32,15 +35,18 @@ export default async function PenielPage() {
     getPenielEvent().catch(() => null),
   ]);
 
-  const programme = FALLBACK_PROGRAMME;
-  const versements = FALLBACK_VERSEMENTS;
+  const programme = content?.programme?.length ? content.programme : FALLBACK_PROGRAMME;
+  const verses = content?.verses?.length ? content.verses : FALLBACK_VERSES;
+  const dates = content?.eventInfo?.dates || "1er — 30 Novembre 2026";
+  const audience = content?.eventInfo?.audience || "Toute la communauté";
+  const header = content?.header;
   const penielDate = penielEvent?.date || "2026-11-01T00:00:00+00:00";
   return (
     <>
       <PageHeader
-        eyebrow="Événement spécial"
-        title="PENIEL 2026"
-        description="Maison de Dieu, porte du ciel. Un mois entier consacré au jeûne et à la prière, du 1er au 30 novembre 2026."
+        eyebrow={header?.eyebrow || "Événement spécial"}
+        title={header?.title || "PENIEL 2026"}
+        description={header?.description || "Maison de Dieu, porte du ciel. Un mois entier consacré au jeûne et à la prière, du 1er au 30 novembre 2026."}
       />
 
       {/* Compte à rebours */}
@@ -55,32 +61,40 @@ export default async function PenielPage() {
               Vision
             </span>
             <h2 className="mt-5 font-display text-3xl leading-tight tracking-tight-48 md:text-4xl">
-              Le combat spirituel d'un peuple en prière
+              {content?.heroTitle || "Le combat spirituel d'un peuple en prière"}
             </h2>
-            <p className="mt-6 text-lg text-night/70">
-              PENIEL 2026 est un appel à la communauté du Temple des Vainqueurs à
-              s'engager dans un mois complet de jeûne et de prière. À l'image de
-              Jacob qui lutta avec l'ange et vit Dieu face à face, nous voulons
-              entrer dans une dimension de communion et de percée spirituelle.
-            </p>
-            <p className="mt-4 text-lg text-night/70">
-              Chaque jour, des temps de prière sont organisés. Chaque vendredi,
-              une veillée d'intercession réunit toute l'assemblée pour un combat
-              spirituel commun.
-            </p>
+            {content?.body?.length ? (
+              <div className="mt-6 space-y-4 text-lg text-night/70">
+                <PortableText value={content.body} />
+              </div>
+            ) : (
+              <>
+                <p className="mt-6 text-lg text-night/70">
+                  PENIEL 2026 est un appel à la communauté du Temple des Vainqueurs à
+                  s'engager dans un mois complet de jeûne et de prière. À l'image de
+                  Jacob qui lutta avec l'ange et vit Dieu face à face, nous voulons
+                  entrer dans une dimension de communion et de percée spirituelle.
+                </p>
+                <p className="mt-4 text-lg text-night/70">
+                  Chaque jour, des temps de prière sont organisés. Chaque vendredi,
+                  une veillée d'intercession réunit toute l'assemblée pour un combat
+                  spirituel commun.
+                </p>
+              </>
+            )}
           </Reveal>
 
           <Reveal delay={0.1} className="grid gap-4">
-            {versements.map((v) => (
+            {verses.map((v) => (
               <div
-                key={v.ref}
+                key={v.reference}
                 className="rounded-6 border border-gold/20 bg-white p-6"
               >
                 <p className="font-display text-lg italic leading-relaxed text-night">
-                  {v.text}
+                  « {v.text} »
                 </p>
                 <span className="mt-3 block text-sm font-semibold uppercase tracking-wider text-gold-600">
-                  {v.ref}
+                  {v.reference}
                 </span>
               </div>
             ))}
@@ -96,13 +110,13 @@ export default async function PenielPage() {
               Programme du mois
             </h2>
             <p className="mt-3 text-ivory/60">
-              Du 1er au 30 novembre 2026 — {settings.address}
+              {dates} — {settings.address}
             </p>
           </Reveal>
 
           <div className="mx-auto max-w-3xl space-y-4">
             {programme.map((p) => (
-              <Reveal key={p.day}>
+              <Reveal key={`${p.day}-${p.title}`}>
                 <div className="flex flex-col gap-3 rounded-6 border border-white/10 bg-white/5 p-6 sm:flex-row sm:items-center">
                   <div className="flex w-40 shrink-0 flex-col">
                     <span className="font-display text-xl text-gold">{p.day}</span>
@@ -112,7 +126,7 @@ export default async function PenielPage() {
                   </div>
                   <div className="border-l-2 border-gold/40 pl-4">
                     <h3 className="font-display text-lg tracking-tight-48">{p.title}</h3>
-                    <p className="text-sm text-ivory/70">{p.desc}</p>
+                    <p className="text-sm text-ivory/70">{p.description}</p>
                   </div>
                 </div>
               </Reveal>
@@ -127,7 +141,7 @@ export default async function PenielPage() {
           <Reveal className="text-center">
             <Calendar className="mx-auto h-8 w-8" />
             <h3 className="mt-3 font-display text-xl tracking-tight-48">Dates</h3>
-            <p className="text-sm text-night/70">1er — 30 Novembre 2026</p>
+            <p className="text-sm text-night/70">{dates}</p>
           </Reveal>
           <Reveal className="text-center" delay={0.1}>
             <MapPin className="mx-auto h-8 w-8" />
@@ -137,7 +151,7 @@ export default async function PenielPage() {
           <Reveal className="text-center" delay={0.2}>
             <Users className="mx-auto h-8 w-8" />
             <h3 className="mt-3 font-display text-xl tracking-tight-48">Pour qui ?</h3>
-            <p className="text-sm text-night/70">Toute la communauté</p>
+            <p className="text-sm text-night/70">{audience}</p>
           </Reveal>
         </div>
       </section>
@@ -158,11 +172,10 @@ export default async function PenielPage() {
           </Reveal>
           <div className="mx-auto max-w-2xl rounded-6 border border-night/10 bg-white p-8 text-center">
             <p className="font-display text-2xl italic leading-relaxed">
-              « Cherchez l'Éternel pendant qu'il se trouve ; invoquez-le pendant
-              qu'il est près. »
+              « {content?.quote?.text || "Cherchez l'Éternel pendant qu'il se trouve ; invoquez-le pendant qu'il est près."} »
             </p>
             <span className="mt-4 block text-sm font-semibold uppercase tracking-wider text-gold-600">
-              Ésaïe 55:6
+              {content?.quote?.reference || "Ésaïe 55:6"}
             </span>
           </div>
         </div>
