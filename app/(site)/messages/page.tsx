@@ -4,6 +4,7 @@ import { PageHeader } from "@/components/sections/PageHeader";
 import { Reveal, StaggerGroup, StaggerItem } from "@/components/motion/Reveal";
 import { getSermons, getPageContent, type Sermon } from "@/lib/sanity/queries";
 import { getSettings } from "@/lib/sanity/settings";
+import { getLatestSermons } from "@/lib/youtube";
 import { pageMetadata } from "@/lib/sanity/metadata";
 import { formatDateFr } from "@/lib/utils";
 
@@ -16,12 +17,15 @@ export function generateMetadata() {
 }
 
 export default async function MessagesPage() {
-  const [sermons, content, settings] = await Promise.all([
-    getSermons(12).catch(() => [] as Sermon[]),
+  const [latest, sanitySermons, content, settings] = await Promise.all([
+    getLatestSermons(6).catch(() => [] as Sermon[]),
+    getSermons(100).catch(() => [] as Sermon[]),
     getPageContent("messages").catch(() => null),
     getSettings(),
   ]);
   const header = content?.header;
+  // Prédications audio / texte (sans vidéo YouTube), gérées dans le Studio
+  const others = sanitySermons.filter((s) => !s.youtubeId);
   return (
     <>
       <PageHeader
@@ -49,50 +53,73 @@ export default async function MessagesPage() {
               </a>
             </p>
           </Reveal>
-          <StaggerGroup className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {sermons.map((s) => (
-              <StaggerItem key={s._id}>
-                <Link
-                  href={`/messages/${s.slug.current}`}
-                  className="group block overflow-hidden rounded-6 border border-night/10 bg-white transition-all hover:shadow-xl"
-                >
-                  <div className="relative aspect-video overflow-hidden bg-night/10">
-                    {s.thumbnail || s.youtubeId ? (
-                      <img
-                        src={s.thumbnail || `https://img.youtube.com/vi/${s.youtubeId}/hqdefault.jpg`}
-                        alt={s.title}
-                        loading="lazy"
-                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      />
-                    ) : (
-                      <div className="grid h-full w-full place-items-center bg-night-gradient">
-                        <Play className="h-12 w-12 text-gold/50" />
-                      </div>
-                    )}
-                    <span className="absolute bottom-3 right-3 rounded-full bg-night/80 px-2.5 py-1 text-xs text-ivory">
-                      {s.duration}
-                    </span>
-                  </div>
-                  <div className="p-5">
-                    <span className="text-xs font-semibold uppercase tracking-wider text-gold-600">
-                      {s.theme}
-                    </span>
-                    <h3 className="mt-2 font-display text-xl leading-snug tracking-tight-48">
-                      {s.title}
-                    </h3>
-                    <p className="mt-2 text-sm text-night/60">
-                      {formatDateFr(s.date)}
-                    </p>
-                    <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-gold-600">
-                      Regarder <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                    </span>
-                  </div>
-                </Link>
-              </StaggerItem>
-            ))}
-          </StaggerGroup>
+          <SermonGrid sermons={latest} />
         </div>
       </section>
+
+      {others.length > 0 && (
+        <section className="bg-ivory pb-12 text-night lg:pb-20">
+          <div className="container-section">
+            <Reveal className="mb-8">
+              <h2 className="font-display text-2xl tracking-tight-48 md:text-3xl">
+                Autres prédications
+              </h2>
+            </Reveal>
+            <SermonGrid sermons={others} />
+          </div>
+        </section>
+      )}
     </>
+  );
+}
+
+function SermonGrid({ sermons }: { sermons: Sermon[] }) {
+  return (
+    <StaggerGroup className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {sermons.map((s) => (
+        <StaggerItem key={s._id}>
+          <Link
+            href={`/messages/${s.slug.current}`}
+            className="group block overflow-hidden rounded-6 border border-night/10 bg-white transition-all hover:shadow-xl"
+          >
+            <div className="relative aspect-video overflow-hidden bg-night/10">
+              {s.thumbnail || s.youtubeId ? (
+                <img
+                  src={s.thumbnail || `https://img.youtube.com/vi/${s.youtubeId}/hqdefault.jpg`}
+                  alt={s.title}
+                  loading="lazy"
+                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+              ) : (
+                <div className="grid h-full w-full place-items-center bg-night-gradient">
+                  <Play className="h-12 w-12 text-gold/50" />
+                </div>
+              )}
+              {s.duration && (
+                <span className="absolute bottom-3 right-3 rounded-full bg-night/80 px-2.5 py-1 text-xs text-ivory">
+                  {s.duration}
+                </span>
+              )}
+            </div>
+            <div className="p-5">
+              {s.theme && (
+                <span className="mb-2 block text-xs font-semibold uppercase tracking-wider text-gold-600">
+                  {s.theme}
+                </span>
+              )}
+              <h3 className="font-display text-xl leading-snug tracking-tight-48">
+                {s.title}
+              </h3>
+              <p className="mt-2 text-sm text-night/60">
+                {formatDateFr(s.date)}
+              </p>
+              <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-gold-600">
+                Regarder <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </span>
+            </div>
+          </Link>
+        </StaggerItem>
+      ))}
+    </StaggerGroup>
   );
 }

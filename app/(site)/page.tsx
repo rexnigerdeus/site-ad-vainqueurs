@@ -11,7 +11,6 @@ import { CtaVisit } from "@/components/sections/CtaVisit";
 import { Faq } from "@/components/sections/Faq";
 import {
   getUpcomingEvents,
-  getFeaturedSermons,
   getAlbums,
   getFaqs,
   getStats,
@@ -21,6 +20,7 @@ import {
   getPenielEvent,
 } from "@/lib/sanity/queries";
 import { getSettings } from "@/lib/sanity/settings";
+import { getLatestSermons } from "@/lib/youtube";
 import type { Metadata } from "next";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -47,7 +47,7 @@ export default async function HomePage() {
     penielEvent,
   ] = await Promise.all([
     getUpcomingEvents(8).catch(() => []),
-    getFeaturedSermons(4).catch(() => []),
+    getLatestSermons(4).catch(() => []),
     getAlbums().catch(() => []),
     getFaqs().catch(() => []),
     getStats().catch(() => []),

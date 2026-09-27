@@ -1,6 +1,6 @@
 import { defineField, defineType } from "sanity";
 
-const PAGES = [
+export const PAGES = [
   { title: "Accueil", value: "home" },
   { title: "À propos", value: "about" },
   { title: "Activités", value: "activities" },
@@ -23,6 +23,7 @@ export default defineType({
       name: "page",
       title: "Page concernée",
       type: "string",
+      readOnly: ({ document }) => Boolean(document?.page),
       options: {
         list: PAGES,
       },

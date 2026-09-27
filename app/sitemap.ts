@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { NAV_LINKS } from "@/lib/church";
 import { getSermons, getAlbums } from "@/lib/sanity/queries";
 import { siteConfig } from "@/lib/site";
+import { getLatestSermons } from "@/lib/youtube";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
@@ -22,13 +23,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: r.priority,
   }));
 
-  const [sermons, albums] = await Promise.all([
+  const [sermons, latest, albums] = await Promise.all([
     getSermons(100).catch(() => []),
+    getLatestSermons(6).catch(() => []),
     getAlbums().catch(() => []),
   ]);
 
-  const sermonRoutes = sermons.map((s) => ({
-    url: `${siteConfig.url}/messages/${s.slug.current}`,
+  const sermonSlugs = new Set([...sermons, ...latest].map((s) => s.slug.current));
+  const sermonRoutes = [...sermonSlugs].map((slug) => ({
+    url: `${siteConfig.url}/messages/${slug}`,
     lastModified: now,
     changeFrequency: "monthly" as const,
     priority: 0.6,

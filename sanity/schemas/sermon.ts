@@ -4,6 +4,10 @@ export default defineType({
   name: "sermon",
   title: "Prédication",
   type: "document",
+  description:
+    "Les 6 dernières vidéos de la chaîne YouTube s'affichent automatiquement sur le site. " +
+    "Créez une prédication ici seulement pour l'audio / le texte, ou pour enrichir une vidéo " +
+    "(prédicateur, thème, texte) en renseignant son ID YouTube.",
   fields: [
     defineField({
       name: "title",
@@ -61,7 +65,8 @@ export default defineType({
       name: "youtubeId",
       title: "ID vidéo YouTube (ex : dQw4w9WgXcQ)",
       type: "string",
-      description: "Pour les prédications vidéo. Laisser vide pour l'audio/texte.",
+      description:
+        "Pour les prédications vidéo : la partie après « v= » dans le lien YouTube. Laisser vide pour l'audio/texte.",
     }),
     defineField({
       name: "audioFile",

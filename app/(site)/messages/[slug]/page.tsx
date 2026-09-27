@@ -4,35 +4,57 @@ import { ArrowLeft, Play } from "lucide-react";
 import { Reveal } from "@/components/motion/Reveal";
 import { getSermons, getSermonBySlug, type Sermon } from "@/lib/sanity/queries";
 import { formatDateFr } from "@/lib/utils";
+import { getLatestSermons, getYoutubeSermon, YT_SLUG_PREFIX } from "@/lib/youtube";
 import { notFound } from "next/navigation";
 import { PortableText } from "@portabletext/react";
 
 type Props = { params: Promise<{ slug: string }> };
 
 export async function generateStaticParams() {
-  const sermons = await getSermons(100).catch(() => [] as Sermon[]);
-  return sermons.map((s) => ({ slug: s.slug.current }));
+  const [sanity, latest] = await Promise.all([
+    getSermons(100).catch(() => [] as Sermon[]),
+    getLatestSermons(6).catch(() => [] as Sermon[]),
+  ]);
+  const slugs = new Set([...sanity, ...latest].map((s) => s.slug.current));
+  return [...slugs].map((slug) => ({ slug }));
+}
+
+/** yt-<videoId> → vidéo YouTube (enrichie si une prédication Sanity la référence). */
+async function loadSermon(slug: string): Promise<Sermon | null> {
+  if (!slug.startsWith(YT_SLUG_PREFIX)) return getSermonBySlug(slug).catch(() => null);
+  const videoId = slug.slice(YT_SLUG_PREFIX.length);
+  const [video, sanity] = await Promise.all([
+    getYoutubeSermon(videoId).catch(() => null),
+    getSermons(100).catch(() => [] as Sermon[]),
+  ]);
+  const doc = sanity.find((s) => s.youtubeId === videoId);
+  if (doc) return getSermonBySlug(doc.slug.current).catch(() => null);
+  return video;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const sermon = await getSermonBySlug(slug).catch(() => null);
+  const sermon = await loadSermon(slug);
   if (!sermon) return { title: "Prédication introuvable" };
+  const image =
+    sermon.thumbnail || (sermon.youtubeId && `https://img.youtube.com/vi/${sermon.youtubeId}/hqdefault.jpg`);
   return {
     title: sermon.title,
     description:
-      sermon.excerpt || `Prédication du ${formatDateFr(sermon.date)} par ${sermon.preacher} — ${sermon.theme}.`,
-    ...(sermon.thumbnail && { openGraph: { images: [{ url: sermon.thumbnail }] } }),
+      sermon.excerpt || [sermon.preacher, sermon.theme].filter(Boolean).join(" — ") || sermon.title,
+    ...(image && { openGraph: { images: [{ url: image }] } }),
   };
 }
 
 export default async function SermonDetailPage({ params }: Props) {
   const { slug } = await params;
-  const sermon = await getSermonBySlug(slug).catch(() => null);
+  const sermon = await loadSermon(slug);
   if (!sermon) notFound();
 
-  const allSermons = await getSermons(10).catch(() => [] as Sermon[]);
-  const related = allSermons.filter((s) => s._id !== sermon._id).slice(0, 3);
+  const latest = await getLatestSermons(6).catch(() => [] as Sermon[]);
+  const related = latest
+    .filter((s) => s._id !== sermon._id && (!sermon.youtubeId || s.youtubeId !== sermon.youtubeId))
+    .slice(0, 3);
 
   return (
     <article className="bg-ivory text-night">
@@ -47,13 +69,15 @@ export default async function SermonDetailPage({ params }: Props) {
               <ArrowLeft className="h-4 w-4" /> Retour aux prédications
             </Link>
             <span className="mt-6 block text-xs font-semibold uppercase tracking-wider text-gold">
-              {sermon.theme} · {sermon.type}
+              {[sermon.theme, sermon.type].filter(Boolean).join(" · ")}
             </span>
             <h1 className="mt-2 font-display text-3xl leading-tight tracking-tight-48 md:text-5xl">
               {sermon.title}
             </h1>
             <p className="mt-4 text-ivory/70">
-              {sermon.preacher} · {formatDateFr(sermon.date)} · {sermon.duration}
+              {[sermon.preacher, sermon.date && formatDateFr(sermon.date), sermon.duration]
+                .filter(Boolean)
+                .join(" · ")}
             </p>
           </Reveal>
         </div>
@@ -86,10 +110,17 @@ export default async function SermonDetailPage({ params }: Props) {
               </p>
             </div>
           ) : null}
-          {sermon.body && sermon.body.length > 0 && (
+          {sermon.body && sermon.body.length > 0 ? (
             <div className="prose mt-8 max-w-none rounded-6 bg-white p-8 first:mt-0">
               <PortableText value={sermon.body} />
             </div>
+          ) : (
+            sermon.youtubeId &&
+            sermon.excerpt && (
+              <p className="mt-8 whitespace-pre-line rounded-6 bg-white p-8 text-night/70">
+                {sermon.excerpt}
+              </p>
+            )
           )}
         </div>
       </section>

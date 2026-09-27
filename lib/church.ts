@@ -19,6 +19,8 @@ export const CHURCH = {
     youtube: "https://www.youtube.com/@advainqueurs",
     facebook: "https://www.facebook.com/Templevainqueurs7",
   },
+  // Chaîne @advainqueurs — utilisé pour le flux des dernières vidéos
+  youtubeChannelId: "UCuLufASGYOAd09T5QhW61DA",
   // Dons : numéro Wave / Orange Money affiché pour l'instant
   donations: {
     wave: "01 00 00 00 00",

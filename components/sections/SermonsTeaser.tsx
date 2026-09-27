@@ -29,20 +29,24 @@ function SermonCard({ sermon }: { sermon: Sermon }) {
             <Play className="h-6 w-6" />
           </span>
         </div>
-        <span className="absolute bottom-3 right-3 rounded-full bg-night/80 px-2.5 py-1 text-xs text-ivory backdrop-blur">
-          {sermon.duration}
-        </span>
+        {sermon.duration && (
+          <span className="absolute bottom-3 right-3 rounded-full bg-night/80 px-2.5 py-1 text-xs text-ivory backdrop-blur">
+            {sermon.duration}
+          </span>
+        )}
       </div>
 
       <div className="p-5">
-        <span className="text-xs font-semibold uppercase tracking-wider text-gold">
-          {sermon.theme}
-        </span>
-        <h3 className="mt-2 font-display text-xl leading-snug tracking-tight-48">
+        {sermon.theme && (
+          <span className="mb-2 block text-xs font-semibold uppercase tracking-wider text-gold">
+            {sermon.theme}
+          </span>
+        )}
+        <h3 className="font-display text-xl leading-snug tracking-tight-48">
           {sermon.title}
         </h3>
         <p className="mt-2 text-sm text-ivory/60">
-          {sermon.preacher} · {formatDateFr(sermon.date)}
+          {[sermon.preacher, formatDateFr(sermon.date)].filter(Boolean).join(" · ")}
         </p>
       </div>
     </Card>

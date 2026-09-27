@@ -2,6 +2,7 @@ import { defineConfig } from "sanity";
 import { structureTool } from "sanity/structure";
 import { visionTool } from "@sanity/vision";
 import { schema } from "./sanity/schemas";
+import { PAGES } from "./sanity/schemas/pageContent";
 
 /**
  * Configuration Sanity Studio.
@@ -41,10 +42,41 @@ export default defineConfig({
             S.listItem().title("Statistiques (accueil)").child(S.documentTypeList("stat").title("Statistiques")),
             S.listItem().title("Départements").child(S.documentTypeList("department").title("Départements")),
             S.listItem().title("Témoignages").child(S.documentTypeList("testimonial").title("Témoignages")),
-            S.listItem().title("Contenus de pages").child(S.documentTypeList("pageContent").title("Contenus de pages")),
+            S.listItem()
+              .title("Contenus de pages")
+              .child(
+                S.list()
+                  .title("Contenus de pages")
+                  .items(
+                    // Un document fixe par page : id « page-<clé> », champ page pré-rempli
+                    PAGES.map((p) =>
+                      S.listItem()
+                        .id(p.value)
+                        .title(p.title)
+                        .child(
+                          S.document()
+                            .schemaType("pageContent")
+                            .documentId(`page-${p.value}`)
+                            .initialValueTemplate("pageContent-by-page", { page: p.value })
+                        )
+                    )
+                  )
+              ),
           ]),
     }),
     visionTool(),
   ],
-  schema,
+  schema: {
+    types: schema.types,
+    templates: (prev) => [
+      ...prev.filter((t) => t.schemaType !== "pageContent"),
+      {
+        id: "pageContent-by-page",
+        title: "Contenu de page",
+        schemaType: "pageContent",
+        parameters: [{ name: "page", type: "string" }],
+        value: (params: { page: string }) => ({ page: params.page }),
+      },
+    ],
+  },
 });
