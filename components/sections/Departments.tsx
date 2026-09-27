@@ -17,8 +17,15 @@ export function Departments({ departments }: { departments?: Department[] }) {
     ? departments.map((d) => ({ _id: d._id, logo: d.logo, name: d.name, description: d.description }))
     : FALLBACK_DEPARTMENTS;
 
-  // Doublé pour une boucle d'animation fluide (translateX -50%)
-  const LOOP = [...items, ...items];
+  // Un groupe = logos répétés jusqu'à dépasser la largeur des plus grands écrans
+  // (MIN_PER_GROUP × ~150px). Deux groupes identiques côte à côte, chacun terminé
+  // par un espacement (pr = gap) : translateX(-50%) retombe pile sur le début
+  // du 2e groupe → boucle continue, sans vide ni saut.
+  const MIN_PER_GROUP = 18;
+  const repeat = Math.max(1, Math.ceil(MIN_PER_GROUP / items.length));
+  const group = Array.from({ length: repeat }, () => items).flat();
+  // Vitesse constante quel que soit le nombre de logos (~4s par logo)
+  const duration = `${group.length * 4}s`;
 
   return (
     <section className="bg-night py-20 lg:py-28">
@@ -34,27 +41,35 @@ export function Departments({ departments }: { departments?: Department[] }) {
       </div>
 
       <Reveal className="relative">
-        <div className="flex items-center gap-5 overflow-hidden px-4 md:gap-6 md:px-6 lg:px-4 xl:px-0">
-          <div className="auto-scroll flex shrink-0 items-center gap-5 md:gap-6">
-            {LOOP.map((d: any, i) => (
+        <div className="overflow-hidden">
+          <div className="auto-scroll flex w-max" style={{ animationDuration: duration }}>
+            {[0, 1].map((copy) => (
               <div
-                key={`${d._id}-${i}`}
-                title={d.name ? [d.name, d.description].filter(Boolean).join(" — ") : undefined}
-                className="group relative h-24 w-24 shrink-0 overflow-hidden rounded-full border border-white/10 bg-white/5 transition-transform duration-300 hover:scale-110 sm:h-28 sm:w-28 md:h-32 md:w-32"
+                key={copy}
+                aria-hidden={copy === 1 || undefined}
+                className="flex shrink-0 items-center gap-5 pr-5 md:gap-6 md:pr-6"
               >
-                {d.logo || d.slug ? (
-                  <Image
-                    src={d.logo || `/${d.slug}.png`}
-                    alt={d.name || d.slug}
-                    fill
-                    sizes="128px"
-                    className="object-cover"
-                  />
-                ) : (
-                  <span className="grid h-full w-full place-items-center p-3 text-center font-display text-sm leading-tight text-gold">
-                    {d.name}
-                  </span>
-                )}
+                {group.map((d: any, i) => (
+                  <div
+                    key={`${d._id}-${i}`}
+                    title={d.name ? [d.name, d.description].filter(Boolean).join(" — ") : undefined}
+                    className="group relative h-24 w-24 shrink-0 overflow-hidden rounded-full border border-white/10 bg-white/5 transition-transform duration-300 hover:scale-110 sm:h-28 sm:w-28 md:h-32 md:w-32"
+                  >
+                    {d.logo || d.slug ? (
+                      <Image
+                        src={d.logo || `/${d.slug}.png`}
+                        alt={copy === 1 ? "" : d.name || d.slug}
+                        fill
+                        sizes="128px"
+                        className="object-cover"
+                      />
+                    ) : (
+                      <span className="grid h-full w-full place-items-center p-3 text-center font-display text-sm leading-tight text-gold">
+                        {d.name}
+                      </span>
+                    )}
+                  </div>
+                ))}
               </div>
             ))}
           </div>
