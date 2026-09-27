@@ -1,6 +1,7 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { WhatsAppFab } from "@/components/layout/WhatsAppFab";
+import { Chatbot } from "@/components/layout/Chatbot";
 
 /**
  * Layout des pages publiques du site.
@@ -17,6 +18,7 @@ export default function SiteLayout({
       <main className="pt-16 md:pt-20">{children}</main>
       <Footer />
       <WhatsAppFab />
+      <Chatbot />
     </>
   );
 }
