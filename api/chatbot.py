@@ -5,8 +5,13 @@ API du chatbot (fonction Python Vercel).
   GET /api/chatbot?id=<id>    -> réponse à la question choisie
 """
 import json
+import os
+import sys
 from http.server import BaseHTTPRequestHandler
 from urllib.parse import urlparse, parse_qs
+
+# Vercel n'ajoute pas le dossier api/ au chemin d'import : on le fait nous-mêmes.
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from _chatbot_data import QUESTIONS, MESSAGE_ACCUEIL
 
