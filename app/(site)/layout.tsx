@@ -1,6 +1,7 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { WhatsAppFab } from "@/components/layout/WhatsAppFab";
+import { Chatbot } from "@/components/layout/Chatbot";
 import { getSettings } from "@/lib/sanity/settings";
 import { NAV_LINKS } from "@/lib/church";
 
@@ -24,6 +25,7 @@ export default async function SiteLayout({
       <main className="pt-16 md:pt-20">{children}</main>
       <Footer settings={settings} navLinks={navLinks} />
       <WhatsAppFab whatsapp={settings.whatsapp} />
+      <Chatbot />
     </>
   );
 }
