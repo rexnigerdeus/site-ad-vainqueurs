@@ -3,7 +3,8 @@ import Image from "next/image";
 import { PageHeader } from "@/components/sections/PageHeader";
 import { Reveal, StaggerGroup, StaggerItem } from "@/components/motion/Reveal";
 import { Heart, Eye, Cross, Users } from "lucide-react";
-import { getTeam, type TeamMember } from "@/lib/sanity/queries";
+import { getTeam, getPageContent, type TeamMember, type PageContent } from "@/lib/sanity/queries";
+import { PortableText } from "@portabletext/react";
 
 export const metadata: Metadata = {
   title: "À propos",
@@ -11,20 +12,28 @@ export const metadata: Metadata = {
     "Histoire, vision, mission et équipe pastorale du Temple des Vainqueurs — Assemblées de Dieu, Abidjan Port-Bouët.",
 };
 
-const pillars = [
-  { icon: Cross, title: "Notre foi", text: "Nous croyons en la Bible, parole inspirée de Dieu, en Jésus-Christ seul sauveur, et en l'action du Saint-Esprit." },
-  { icon: Eye, title: "Notre vision", text: "Édifier une communauté de vainqueurs qui rayonne dans Port-Bouët, à Abidjan et au-delà des frontières." },
-  { icon: Heart, title: "Notre mission", text: "Évangéliser, faire des disciples, équiper les saints pour l'œuvre du ministère et servir la communauté." },
-  { icon: Users, title: "Nos valeurs", text: "Amour, prière, fidélité à la Parole, communion fraternelle et engagement au service." },
+const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
+  Cross,
+  Eye,
+  Heart,
+  Users,
+};
+
+const FALLBACK_PILLARS = [
+  { icon: "Cross", title: "Notre foi", text: "Nous croyons en la Bible, parole inspirée de Dieu, en Jésus-Christ seul sauveur, et en l'action du Saint-Esprit." },
+  { icon: "Eye", title: "Notre vision", text: "Édifier une communauté de vainqueurs qui rayonne dans Port-Bouët, à Abidjan et au-delà des frontières." },
+  { icon: "Heart", title: "Notre mission", text: "Évangéliser, faire des disciples, équiper les saints pour l'œuvre du ministère et servir la communauté." },
+  { icon: "Users", title: "Nos valeurs", text: "Amour, prière, fidélité à la Parole, communion fraternelle et engagement au service." },
 ];
 
 export default async function AboutPage() {
-  let team: TeamMember[] = [];
-  try {
-    team = await getTeam();
-  } catch (e) {
-    console.error("[a-propos] Sanity fetch failed:", e);
-  }
+  const [team, pageContent] = await Promise.all([
+    getTeam().catch(() => [] as TeamMember[]),
+    getPageContent("about").catch(() => null as PageContent | null),
+  ]);
+
+  const pillars = pageContent?.values?.length ? pageContent.values : FALLBACK_PILLARS;
+  const quote = pageContent?.quote;
   return (
     <>
       <PageHeader
@@ -41,35 +50,41 @@ export default async function AboutPage() {
               Notre histoire
             </p>
             <h2 className="font-display text-3xl tracking-tight-48 md:text-4xl">
-              Née de la foi, grandie dans la communion
+              {pageContent?.heroTitle || "Née de la foi, grandie dans la communion"}
             </h2>
             <div className="mt-6 space-y-4 text-lg text-night/70">
-              <p>
-                Le Temple des Vainqueurs a été fondé pour répondre au besoin
-                spirituel croissant des habitants de Port-Bouët et du Vridi.
-                Depuis ses débuts, l'église s'est attachée à annoncer l'Évangile
-                et à accompagner les fidèles dans leur marche avec le Christ.
-              </p>
-              <p>
-                Au fil des années, l'assemblée s'est agrandie, des ministères
-                se sont développés (jeunesse, femmes, hommes, enfants), et
-                l'église est devenue un pilier communautaire reconnu dans la
-                commune.
-              </p>
-              <p>
-                Aujourd'hui, le Temple des Vainqueurs rayonne au-delà des
-                frontières ivoiriennes grâce à sa diaspora fidèle qui suit
-                les cultes et prédications en ligne.
-              </p>
+              {pageContent?.body && pageContent.body.length > 0 ? (
+                <PortableText value={pageContent.body} />
+              ) : (
+                <>
+                  <p>
+                    Le Temple des Vainqueurs a été fondé pour répondre au besoin
+                    spirituel croissant des habitants de Port-Bouët et du Vridi.
+                    Depuis ses débuts, l'église s'est attachée à annoncer l'Évangile
+                    et à accompagner les fidèles dans leur marche avec le Christ.
+                  </p>
+                  <p>
+                    Au fil des années, l'assemblée s'est agrandie, des ministères
+                    se sont développés (jeunesse, femmes, hommes, enfants), et
+                    l'église est devenue un pilier communautaire reconnu dans la
+                    commune.
+                  </p>
+                  <p>
+                    Aujourd'hui, le Temple des Vainqueurs rayonne au-delà des
+                    frontières ivoiriennes grâce à sa diaspora fidèle qui suit
+                    les cultes et prédications en ligne.
+                  </p>
+                </>
+              )}
             </div>
           </Reveal>
 
           <Reveal delay={0.1} className="rounded-6 bg-night-gradient p-10 text-ivory">
             <Cross className="h-10 w-10 text-gold" />
             <blockquote className="mt-4 font-display text-2xl leading-relaxed">
-              « Je puis tout par Christ qui me fortifie. »
+              « {quote?.text || "Je puis tout par Christ qui me fortifie."} »
             </blockquote>
-            <p className="mt-3 text-sm text-ivory/60">Philippiens 4:13 — verset fondateur</p>
+            <p className="mt-3 text-sm text-ivory/60">{quote?.reference || "Philippiens 4:13"} — verset fondateur</p>
           </Reveal>
         </div>
       </section>
@@ -83,13 +98,16 @@ export default async function AboutPage() {
             </h2>
           </Reveal>
           <StaggerGroup className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {pillars.map((p) => (
-              <StaggerItem key={p.title} className="glass-card rounded-6 p-6">
-                <p.icon className="h-8 w-8 text-gold" />
+          {pillars.map((p) => {
+            const Icon = iconMap[p.icon] || Cross;
+            return (
+            <StaggerItem key={p.title} className="glass-card rounded-6 p-6">
+              <Icon className="h-8 w-8 text-gold" />
                 <h3 className="mt-4 font-display text-xl tracking-tight-48">{p.title}</h3>
                 <p className="mt-2 text-sm text-ivory/70">{p.text}</p>
               </StaggerItem>
-            ))}
+            );
+          })}
           </StaggerGroup>
         </div>
       </section>

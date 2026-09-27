@@ -8,9 +8,10 @@ import { Flame } from "lucide-react";
  * Section "Événement spécial" — PENIEL 2026.
  * Mois de jeûne et de prière : novembre 2026.
  * Compte à rebours avant le 1er novembre 2026.
+ * La date cible peut être passée en props depuis un événement Sanity.
  */
 
-const PENIEL_DATE = new Date("2026-11-01T00:00:00+00:00");
+const DEFAULT_DATE = new Date("2026-11-01T00:00:00+00:00");
 
 function getTimeLeft(target: Date) {
   const total = Math.max(0, target.getTime() - Date.now());
@@ -36,7 +37,8 @@ function Unit({ value, label }: { value: number; label: string }) {
   );
 }
 
-export function PenielCountdown() {
+export function PenielCountdown({ targetDate }: { targetDate?: string }) {
+  const PENIEL_DATE = targetDate ? new Date(targetDate) : DEFAULT_DATE;
   const [timeLeft, setTimeLeft] = React.useState(() => getTimeLeft(PENIEL_DATE));
   const [mounted, setMounted] = React.useState(false);
 
@@ -44,7 +46,7 @@ export function PenielCountdown() {
     setMounted(true);
     const id = setInterval(() => setTimeLeft(getTimeLeft(PENIEL_DATE)), 1000);
     return () => clearInterval(id);
-  }, []);
+  }, [PENIEL_DATE]);
 
   return (
     <section className="relative overflow-hidden bg-night py-20 lg:py-28">

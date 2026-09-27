@@ -4,8 +4,8 @@ import Link from "next/link";
 import { Calendar, ArrowRight } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Reveal, StaggerGroup, StaggerItem } from "@/components/motion/Reveal";
-import { upcomingEvents } from "@/lib/data";
 import { formatDateFr } from "@/lib/utils";
+import type { Event } from "@/lib/sanity/queries";
 
 const categoryColor: Record<string, string> = {
   culte: "bg-gold/20 text-gold border-gold/30",
@@ -23,7 +23,8 @@ const categoryLabel: Record<string, string> = {
   special: "Événement",
 };
 
-export function UpcomingEvents() {
+export function UpcomingEvents({ events }: { events: Event[] }) {
+  if (!events || events.length === 0) return null;
   return (
     <section className="bg-ivory py-20 text-night lg:py-28">
       <div className="container-section">
@@ -46,8 +47,8 @@ export function UpcomingEvents() {
 
         {/* Carrousel scroll-snap natif (façon Artlist) */}
         <StaggerGroup className="snap-carousel">
-          {upcomingEvents.map((event) => (
-            <StaggerItem key={event.id}>
+          {events.map((event) => (
+            <StaggerItem key={event._id}>
               <Card className="group w-[300px] border-night/10 bg-white p-6 transition-all hover:shadow-xl md:w-[360px]">
                 <div className="flex items-center justify-between">
                   <span

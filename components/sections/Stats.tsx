@@ -1,14 +1,23 @@
 import { Heart, Users, Calendar, Globe } from "lucide-react";
 import { Reveal, StaggerGroup, StaggerItem } from "@/components/motion/Reveal";
+import type { StatItem } from "@/lib/sanity/queries";
 
-const stats = [
-  { icon: Users, value: "500+", label: "Fidèles" },
-  { icon: Calendar, value: "10 ans", label: "de ministère" },
-  { icon: Globe, value: "4", label: "continents touchés" },
-  { icon: Heart, value: "100%", label: "don de soi" },
+const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
+  Users,
+  Calendar,
+  Globe,
+  Heart,
+};
+
+const FALLBACK_STATS: StatItem[] = [
+  { _id: "s1", icon: "Users", value: "500+", label: "Fidèles" },
+  { _id: "s2", icon: "Calendar", value: "10 ans", label: "de ministère" },
+  { _id: "s3", icon: "Globe", value: "4", label: "continents touchés" },
+  { _id: "s4", icon: "Heart", value: "100%", label: "don de soi" },
 ];
 
-export function Stats() {
+export function Stats({ stats }: { stats?: StatItem[] }) {
+  const data = stats?.length ? stats : FALLBACK_STATS;
   return (
     <section className="bg-gold-gradient py-16 text-night">
       <div className="container-section">
@@ -18,17 +27,20 @@ export function Stats() {
           </h2>
         </Reveal>
         <StaggerGroup className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {stats.map((s) => (
-            <StaggerItem key={s.label} className="text-center">
+          {data.map((s) => {
+            const Icon = iconMap[s.icon] || Heart;
+            return (
+            <StaggerItem key={s._id} className="text-center">
               <div className="mx-auto mb-3 grid h-14 w-14 place-items-center rounded-full bg-night/10">
-                <s.icon className="h-6 w-6" />
+                <Icon className="h-6 w-6" />
               </div>
               <div className="font-display text-4xl tracking-tight-48 md:text-5xl">
                 {s.value}
               </div>
               <div className="mt-1 text-sm font-medium text-night/70">{s.label}</div>
             </StaggerItem>
-          ))}
+            );
+          })}
         </StaggerGroup>
       </div>
     </section>

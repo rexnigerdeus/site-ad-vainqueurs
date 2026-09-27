@@ -3,7 +3,7 @@ import Link from "next/link";
 import { PageHeader } from "@/components/sections/PageHeader";
 import { Reveal, StaggerGroup, StaggerItem } from "@/components/motion/Reveal";
 import { Calendar, Clock, MapPin, Images } from "lucide-react";
-import { upcomingEvents, albums } from "@/lib/data";
+import { getUpcomingEvents, getAlbums, getWeeklyProgram, type Event, type Album, type WeeklyProgramItem } from "@/lib/sanity/queries";
 import { formatDateFr } from "@/lib/utils";
 
 export const metadata: Metadata = {
@@ -12,14 +12,21 @@ export const metadata: Metadata = {
     "Cultes hebdomadaires, étude biblique, veillées d'intercession, événements spéciaux et albums photos du Temple des Vainqueurs.",
 };
 
-const weeklyProgram = [
-  { day: "Dimanche", time: "09h00", title: "Culte dominical", desc: "Louange, adoration et prédication." },
-  { day: "Mercredi", time: "18h00", title: "Étude biblique", desc: "Enseignement approfondi de la Parole." },
-  { day: "Vendredi", time: "18h00", title: "Veillée d'intercession", desc: "Nuit de prière (dernier vendredi du mois)." },
-  { day: "Samedi", time: "15h00", title: "Jeunes vainqueurs", desc: "Rassemblement des jeunes de l'église." },
+const FALLBACK_PROGRAM: WeeklyProgramItem[] = [
+  { _id: "w1", day: "Dimanche", time: "09h00", title: "Culte dominical", description: "Louange, adoration et prédication." },
+  { _id: "w2", day: "Mercredi", time: "18h00", title: "Étude biblique", description: "Enseignement approfondi de la Parole." },
+  { _id: "w3", day: "Vendredi", time: "18h00", title: "Veillée d'intercession", description: "Nuit de prière (dernier vendredi du mois)." },
+  { _id: "w4", day: "Samedi", time: "15h00", title: "Jeunes vainqueurs", description: "Rassemblement des jeunes de l'église." },
 ];
 
-export default function ActivitesPage() {
+export default async function ActivitesPage() {
+  const [events, albums, weeklyProgram] = await Promise.all([
+    getUpcomingEvents(6).catch(() => [] as Event[]),
+    getAlbums().catch(() => [] as Album[]),
+    getWeeklyProgram().catch(() => [] as WeeklyProgramItem[]),
+  ]);
+
+  const program = weeklyProgram.length ? weeklyProgram : FALLBACK_PROGRAM;
   return (
     <>
       <PageHeader
@@ -50,7 +57,7 @@ export default function ActivitesPage() {
                 </div>
                 <div className="border-l-2 border-gold/40 pl-4">
                   <h3 className="font-display text-lg tracking-tight-48">{p.title}</h3>
-                  <p className="text-sm text-night/70">{p.desc}</p>
+                  <p className="text-sm text-night/70">{p.description}</p>
                 </div>
               </StaggerItem>
             ))}
@@ -67,8 +74,8 @@ export default function ActivitesPage() {
             </h2>
           </Reveal>
           <StaggerGroup className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-            {upcomingEvents.map((e) => (
-              <StaggerItem key={e.id} className="glass-card rounded-6 p-6">
+            {events.map((e) => (
+              <StaggerItem key={e._id} className="glass-card rounded-6 p-6">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-semibold uppercase tracking-wider text-gold">
                     {e.category}
@@ -104,9 +111,9 @@ export default function ActivitesPage() {
           </Reveal>
           <StaggerGroup className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {albums.map((album) => (
-              <StaggerItem key={album.id}>
+              <StaggerItem key={album._id}>
                 <Link
-                  href={`/galerie/${album.slug}`}
+                  href={`/galerie/${album.slug.current}`}
                   className="group relative block overflow-hidden rounded-6"
                 >
                   <div className="aspect-[4/3] overflow-hidden bg-night/10">

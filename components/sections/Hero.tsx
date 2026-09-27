@@ -3,12 +3,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/motion/Reveal";
-import { CHURCH } from "@/lib/church";
 import { formatDateFr } from "@/lib/utils";
-import { upcomingEvents } from "@/lib/data";
+import type { Event } from "@/lib/sanity/queries";
 
-export function Hero() {
-  const nextEvent = upcomingEvents[0];
+export function Hero({ nextEvent }: { nextEvent?: Event | null }) {
   return (
     <section id="hero" className="relative overflow-hidden bg-night-gradient">
       {/* Décor lumineux */}

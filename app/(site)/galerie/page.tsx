@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Images } from "lucide-react";
 import { PageHeader } from "@/components/sections/PageHeader";
 import { Reveal, StaggerGroup, StaggerItem } from "@/components/motion/Reveal";
-import { albums } from "@/lib/data";
+import { getAlbums, type Album } from "@/lib/sanity/queries";
 import { formatDateFr } from "@/lib/utils";
 
 export const metadata: Metadata = {
@@ -12,7 +12,8 @@ export const metadata: Metadata = {
     "Albums photos et vidéos des activités, cultes et moments forts du Temple des Vainqueurs.",
 };
 
-export default function GaleriePage() {
+export default async function GaleriePage() {
+  const albums = await getAlbums().catch(() => [] as Album[]);
   return (
     <>
       <PageHeader
@@ -25,9 +26,9 @@ export default function GaleriePage() {
         <div className="container-section">
           <StaggerGroup className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {albums.map((album) => (
-              <StaggerItem key={album.id}>
+              <StaggerItem key={album._id}>
                 <Link
-                  href={`/galerie/${album.slug}`}
+                  href={`/galerie/${album.slug.current}`}
                   className="group relative block overflow-hidden rounded-6"
                 >
                   <div className="aspect-[4/3] overflow-hidden bg-night/10">

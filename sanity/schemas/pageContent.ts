@@ -21,6 +21,7 @@ export default defineType({
           { title: "Galerie", value: "gallery" },
           { title: "Contact", value: "contact" },
           { title: "Dons", value: "donations" },
+          { title: "Peniel", value: "peniel" },
         ],
       },
       validation: (Rule) => Rule.required(),
@@ -35,6 +36,40 @@ export default defineType({
       title: "Sous-titre / description du hero",
       type: "text",
       rows: 3,
+    }),
+    defineField({
+      name: "values",
+      title: "Valeurs / Piliers (cartes)",
+      type: "array",
+      of: [
+        {
+          type: "object",
+          fields: [
+            { name: "icon", title: "Icône", type: "string", options: { list: [
+              { title: "❤️ Amour", value: "Heart" },
+              { title: "🤲 Prière", value: "HandHeart" },
+              { title: "📖 Parole", value: "BookOpen" },
+              { title: "👥 Communion", value: "Users" },
+              { title: "✝️ Foi", value: "Cross" },
+              { title: "👁️ Vision", value: "Eye" },
+            ] } },
+            { name: "title", title: "Titre", type: "string" },
+            { name: "text", title: "Texte", type: "string" },
+          ],
+          preview: { select: { title: "title", subtitle: "text" } },
+        },
+      ],
+      description: "Cartes affichées dans les sections « valeurs » (accueil, à propos).",
+    }),
+    defineField({
+      name: "quote",
+      title: "Citation biblique",
+      type: "object",
+      fields: [
+        { name: "text", title: "Texte de la citation", type: "string" },
+        { name: "reference", title: "Référence (ex : Philippiens 4:13)", type: "string" },
+      ],
+      description: "Citation mise en avant sur la page (accueil, à propos, dons, peniel).",
     }),
     defineField({
       name: "body",

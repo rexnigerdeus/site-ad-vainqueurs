@@ -2,9 +2,19 @@ import Link from "next/link";
 import { MapPin, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/motion/Reveal";
-import { CHURCH } from "@/lib/church";
 
-export function CtaVisit() {
+type Settings = {
+  quartier?: string;
+  commune?: string;
+  city?: string;
+  whatsapp?: string;
+};
+
+export function CtaVisit({ settings }: { settings?: Settings }) {
+  const quartier = settings?.quartier || "Vridi";
+  const commune = settings?.commune || "Port-Bouët";
+  const city = settings?.city || "Abidjan";
+  const whatsapp = settings?.whatsapp || "22500000000";
   return (
     <section className="relative overflow-hidden bg-night-gradient py-20 lg:py-28">
       <div className="pointer-events-none absolute top-1/2 left-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gold/15 blur-[120px]" />
@@ -15,7 +25,7 @@ export function CtaVisit() {
             Venez nous rendre visite
           </h2>
           <p className="mx-auto mt-5 max-w-xl text-lg text-ivory/70">
-            Le temple vous accueille à {CHURCH.quartier}, {CHURCH.commune}, {CHURCH.city}.
+            Le temple vous accueille à {quartier}, {commune}, {city}.
             Le dimanche à 9h00 pour le culte dominical.
           </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
@@ -25,7 +35,7 @@ export function CtaVisit() {
               </Link>
             </Button>
             <Button asChild size="lg" variant="whatsapp">
-              <a href={`https://wa.me/${CHURCH.whatsapp}`} target="_blank" rel="noreferrer">
+              <a href={`https://wa.me/${whatsapp}`} target="_blank" rel="noreferrer">
                 WhatsApp
               </a>
             </Button>

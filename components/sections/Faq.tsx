@@ -1,8 +1,11 @@
+"use client";
+
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 import { Reveal } from "@/components/motion/Reveal";
-import { faqs } from "@/lib/data";
+import type { FaqItem } from "@/lib/sanity/queries";
 
-export function Faq() {
+export function Faq({ faqs }: { faqs: FaqItem[] }) {
+  if (!faqs || faqs.length === 0) return null;
   return (
     <section id="faqs" className="bg-night py-20 lg:py-28">
       <div className="container-prose">
@@ -18,7 +21,7 @@ export function Faq() {
         <Reveal>
           <Accordion type="single" collapsible className="rounded-6 border border-white/10 bg-white/5 px-6">
             {faqs.map((f, i) => (
-              <AccordionItem key={i} value={`item-${i}`}>
+              <AccordionItem key={f._id || i} value={`item-${i}`}>
                 <AccordionTrigger>{f.q}</AccordionTrigger>
                 <AccordionContent>{f.a}</AccordionContent>
               </AccordionItem>

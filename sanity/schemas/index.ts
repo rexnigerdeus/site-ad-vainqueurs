@@ -5,7 +5,24 @@ import album from "./album";
 import teamMember from "./teamMember";
 import faq from "./faq";
 import pageContent from "./pageContent";
+import siteSettings from "./siteSettings";
+import stat from "./stat";
+import department from "./department";
+import testimonial from "./testimonial";
+import weeklyProgram from "./weeklyProgram";
 
 export const schema: { types: SchemaTypeDefinition[] } = {
-  types: [event, sermon, album, teamMember, faq, pageContent],
+  types: [
+    siteSettings,
+    event,
+    weeklyProgram,
+    sermon,
+    album,
+    teamMember,
+    faq,
+    stat,
+    department,
+    testimonial,
+    pageContent,
+  ],
 };

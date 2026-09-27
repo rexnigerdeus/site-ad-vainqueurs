@@ -2,19 +2,21 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, Play } from "lucide-react";
 import { Reveal } from "@/components/motion/Reveal";
-import { sermons } from "@/lib/data";
+import { getSermons, getSermonBySlug, type Sermon } from "@/lib/sanity/queries";
 import { formatDateFr } from "@/lib/utils";
 import { notFound } from "next/navigation";
+import { PortableText } from "@portabletext/react";
 
 type Props = { params: Promise<{ slug: string }> };
 
 export async function generateStaticParams() {
-  return sermons.map((s) => ({ slug: s.slug }));
+  const sermons = await getSermons(100).catch(() => [] as Sermon[]);
+  return sermons.map((s) => ({ slug: s.slug.current }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const sermon = sermons.find((s) => s.slug === slug);
+  const sermon = await getSermonBySlug(slug).catch(() => null);
   if (!sermon) return { title: "Prédication introuvable" };
   return {
     title: sermon.title,
@@ -24,10 +26,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function SermonDetailPage({ params }: Props) {
   const { slug } = await params;
-  const sermon = sermons.find((s) => s.slug === slug);
+  const sermon = await getSermonBySlug(slug).catch(() => null);
   if (!sermon) notFound();
 
-  const related = sermons.filter((s) => s.id !== sermon.id).slice(0, 3);
+  const allSermons = await getSermons(10).catch(() => [] as Sermon[]);
+  const related = allSermons.filter((s) => s._id !== sermon._id).slice(0, 3);
 
   return (
     <article className="bg-ivory text-night">
@@ -67,15 +70,22 @@ export default async function SermonDetailPage({ params }: Props) {
                 className="h-full w-full"
               />
             </div>
-          ) : sermon.type === "audio" ? (
+          ) : sermon.type === "audio" && sermon.audioFile?.asset?.url ? (
             <div className="rounded-6 bg-night p-8 text-ivory">
-              <p className="mb-4 text-ivory/70">Lecteur audio — fichier à venir.</p>
-              <div className="h-16 rounded-xl bg-white/5" />
+              <p className="mb-4 text-ivory/70">Lecteur audio</p>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <audio controls className="w-full">
+                <source src={sermon.audioFile.asset.url} />
+              </audio>
+            </div>
+          ) : sermon.body && sermon.body.length > 0 ? (
+            <div className="prose max-w-none rounded-6 bg-white p-8">
+              <PortableText value={sermon.body} />
             </div>
           ) : (
             <div className="prose rounded-6 bg-white p-8">
               <p className="text-night/70">
-                Contenu texte de la prédication — à intégrer depuis le CMS.
+                Contenu de la prédication à venir.
               </p>
             </div>
           )}
@@ -91,8 +101,8 @@ export default async function SermonDetailPage({ params }: Props) {
           <div className="grid gap-4 sm:grid-cols-3">
             {related.map((r) => (
               <Link
-                key={r.id}
-                href={`/messages/${r.slug}`}
+                key={r._id}
+                href={`/messages/${r.slug.current}`}
                 className="group rounded-6 border border-night/10 bg-white p-4 transition-all hover:shadow-lg"
               >
                 <Play className="h-6 w-6 text-gold-600" />

@@ -4,7 +4,7 @@ import { Play, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { Reveal, StaggerGroup, StaggerItem } from "@/components/motion/Reveal";
-import { sermons, type Sermon } from "@/lib/data";
+import type { Sermon } from "@/lib/sanity/queries";
 import { formatDateFr } from "@/lib/utils";
 
 function SermonCard({ sermon }: { sermon: Sermon }) {
@@ -49,8 +49,8 @@ function SermonCard({ sermon }: { sermon: Sermon }) {
   );
 }
 
-export function SermonsTeaser() {
-  const latest = sermons.slice(0, 4);
+export function SermonsTeaser({ sermons }: { sermons: Sermon[] }) {
+  if (!sermons || sermons.length === 0) return null;
 
   return (
     <section className="bg-ivory py-20 text-night lg:py-28">
@@ -73,9 +73,9 @@ export function SermonsTeaser() {
         </Reveal>
 
         <StaggerGroup className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {latest.map((s) => (
-            <StaggerItem key={s.id}>
-              <Link href={`/messages/${s.slug}`}>
+          {sermons.map((s) => (
+            <StaggerItem key={s._id}>
+              <Link href={`/messages/${s.slug.current}`}>
                 <SermonCard sermon={s} />
               </Link>
             </StaggerItem>

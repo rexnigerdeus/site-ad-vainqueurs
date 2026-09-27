@@ -3,7 +3,8 @@ import { PageHeader } from "@/components/sections/PageHeader";
 import { PenielCountdown } from "@/components/sections/PenielCountdown";
 import { Reveal } from "@/components/motion/Reveal";
 import { Flame, Calendar, Clock, MapPin, BookOpen, Users } from "lucide-react";
-import { CHURCH } from "@/lib/church";
+import { getSettings } from "@/lib/sanity/settings";
+import { getPageContent, getPenielEvent, type PageContent } from "@/lib/sanity/queries";
 
 export const metadata: Metadata = {
   title: "PENIEL 2026",
@@ -11,29 +12,29 @@ export const metadata: Metadata = {
     "PENIEL 2026 — Mois de jeûne et de prière du Temple des Vainqueurs. Du 1er au 30 novembre 2026.",
 };
 
-const programme = [
+const FALLBACK_PROGRAMME = [
   { day: "1er Nov.", title: "Culte d'ouverture", desc: "Lancement du mois de jeûne et d'intercession.", time: "18h00" },
   { day: "Chaque jour", title: "Temps de prière", desc: "Intercession personnelle et communautaire.", time: "05h30 & 18h00" },
   { day: "Tous les vendredis", title: "Veillée d'intercession", desc: "Nuit de prière communautaire.", time: "18h00" },
   { day: "30 Nov.", title: "Culte d'action de grâces", desc: "Clôture du mois de jeûne et de prière.", time: "18h00" },
 ];
 
-const versements = [
-  {
-    ref: "Genèse 32:30",
-    text: "« Jacob appela ce lieu du nom de Peniel : J'ai vu Dieu face à face, et mon âme a été délivrée. »",
-  },
-  {
-    ref: "Matthieu 17:21",
-    text: "« Cette sorte de démon ne sort que par la prière et le jeûne. »",
-  },
-  {
-    ref: "Ésaïe 58:6",
-    text: "« Voici le jeûne que je préfère : dénouer les chaînes de la méchanceté, détacher les liens du joug. »",
-  },
+const FALLBACK_VERSEMENTS = [
+  { ref: "Genèse 32:30", text: "« Jacob appela ce lieu du nom de Peniel : J'ai vu Dieu face à face, et mon âme a été délivrée. »" },
+  { ref: "Matthieu 17:21", text: "« Cette sorte de démon ne sort que par la prière et le jeûne. »" },
+  { ref: "Ésaïe 58:6", text: "« Voici le jeûne que je préfère : dénouer les chaînes de la méchanceté, détacher les liens du joug. »" },
 ];
 
-export default function PenielPage() {
+export default async function PenielPage() {
+  const [settings, content, penielEvent] = await Promise.all([
+    getSettings(),
+    getPageContent("peniel").catch(() => null as PageContent | null),
+    getPenielEvent().catch(() => null),
+  ]);
+
+  const programme = FALLBACK_PROGRAMME;
+  const versements = FALLBACK_VERSEMENTS;
+  const penielDate = penielEvent?.date || "2026-11-01T00:00:00+00:00";
   return (
     <>
       <PageHeader
@@ -43,7 +44,7 @@ export default function PenielPage() {
       />
 
       {/* Compte à rebours */}
-      <PenielCountdown />
+      <PenielCountdown targetDate={penielDate} />
 
       {/* Présentation */}
       <section className="bg-ivory py-20 text-night lg:py-28">
@@ -95,7 +96,7 @@ export default function PenielPage() {
               Programme du mois
             </h2>
             <p className="mt-3 text-ivory/60">
-              Du 1er au 30 novembre 2026 — {CHURCH.address}
+              Du 1er au 30 novembre 2026 — {settings.address}
             </p>
           </Reveal>
 
@@ -131,7 +132,7 @@ export default function PenielPage() {
           <Reveal className="text-center" delay={0.1}>
             <MapPin className="mx-auto h-8 w-8" />
             <h3 className="mt-3 font-display text-xl tracking-tight-48">Lieu</h3>
-            <p className="text-sm text-night/70">{CHURCH.address}</p>
+            <p className="text-sm text-night/70">{settings.address}</p>
           </Reveal>
           <Reveal className="text-center" delay={0.2}>
             <Users className="mx-auto h-8 w-8" />

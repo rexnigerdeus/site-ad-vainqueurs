@@ -17,6 +17,16 @@ export async function getUpcomingEvents(limit = 6) {
   );
 }
 
+export async function getPenielEvent() {
+  return sanityClient.fetch<Event | null>(
+    `*[_type == "event" && category == "special" && title match "PENIEL*"] | order(date asc) [0] {
+      _id, title, slug, date, time, location, category, description
+    }`,
+    {},
+    { next: { revalidate: 3600 } }
+  );
+}
+
 export async function getFeaturedEvents(limit = 4) {
   return sanityClient.fetch<Event[]>(
     `*[_type == "event" && featured == true] | order(date asc) [0...$limit] {
@@ -118,9 +128,65 @@ export async function getFaqs() {
 export async function getPageContent(page: string) {
   return sanityClient.fetch<PageContent | null>(
     `*[_type == "pageContent" && page == $page][0] {
-      _id, page, heroTitle, heroDescription, body, seo
+      _id, page, heroTitle, heroDescription, values, quote, body, seo
     }`,
     { page },
+    { next: { revalidate: 3600 } }
+  );
+}
+
+// ---------- Réglages du site (singleton) ----------
+export async function getSiteSettings() {
+  return sanityClient.fetch<SiteSettings | null>(
+    `*[_type == "siteSettings"][0] {
+      _id, name, fullName, denomination, quartier, commune, city, country,
+      address, phone, whatsapp, email, social, donations, serviceHours
+    }`,
+    {},
+    { next: { revalidate: 3600 } }
+  );
+}
+
+// ---------- Programme hebdomadaire ----------
+export async function getWeeklyProgram() {
+  return sanityClient.fetch<WeeklyProgramItem[]>(
+    `*[_type == "weeklyProgram"] | order(order asc) {
+      _id, day, time, title, description
+    }`,
+    {},
+    { next: { revalidate: 3600 } }
+  );
+}
+
+// ---------- Statistiques (accueil) ----------
+export async function getStats() {
+  return sanityClient.fetch<StatItem[]>(
+    `*[_type == "stat"] | order(order asc) {
+      _id, icon, value, label
+    }`,
+    {},
+    { next: { revalidate: 3600 } }
+  );
+}
+
+// ---------- Départements ----------
+export async function getDepartments() {
+  return sanityClient.fetch<Department[]>(
+    `*[_type == "department"] | order(order asc) {
+      _id, name, "logo": logo.asset->url, description
+    }`,
+    {},
+    { next: { revalidate: 3600 } }
+  );
+}
+
+// ---------- Témoignages ----------
+export async function getTestimonials() {
+  return sanityClient.fetch<Testimonial[]>(
+    `*[_type == "testimonial"] | order(order asc) {
+      _id, text, author, role, "photo": photo.asset->url
+    }`,
+    {},
     { next: { revalidate: 3600 } }
   );
 }
@@ -181,6 +247,56 @@ export type PageContent = {
   page: string;
   heroTitle?: string;
   heroDescription?: string;
+  values?: { icon: string; title: string; text: string }[];
+  quote?: { text: string; reference: string };
   body?: any[];
   seo?: { title?: string; description?: string };
+};
+
+export type SiteSettings = {
+  _id: string;
+  name: string;
+  fullName?: string;
+  denomination?: string;
+  quartier?: string;
+  commune?: string;
+  city?: string;
+  country?: string;
+  address?: string;
+  phone?: string;
+  whatsapp?: string;
+  email?: string;
+  social?: { youtube?: string; facebook?: string };
+  donations?: { wave?: string; orangeMoney?: string };
+  serviceHours?: string;
+};
+
+export type WeeklyProgramItem = {
+  _id: string;
+  day: string;
+  time: string;
+  title: string;
+  description?: string;
+};
+
+export type StatItem = {
+  _id: string;
+  icon: string;
+  value: string;
+  label: string;
+};
+
+export type Department = {
+  _id: string;
+  name: string;
+  logo?: string;
+  description?: string;
+};
+
+export type Testimonial = {
+  _id: string;
+  text: string;
+  author: string;
+  role?: string;
+  photo?: string;
 };

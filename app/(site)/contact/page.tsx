@@ -4,7 +4,7 @@ import { PageHeader } from "@/components/sections/PageHeader";
 import { Reveal } from "@/components/motion/Reveal";
 import { ContactForm } from "@/components/sections/ContactForm";
 import { Button } from "@/components/ui/button";
-import { CHURCH } from "@/lib/church";
+import { getSettings } from "@/lib/sanity/settings";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -12,7 +12,8 @@ export const metadata: Metadata = {
     "Contactez le Temple des Vainqueurs — formulaire, téléphone, WhatsApp, adresse à Vridi, Port-Bouët, Abidjan.",
 };
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const s = await getSettings();
   return (
     <>
       <PageHeader
@@ -35,7 +36,7 @@ export default function ContactPage() {
                 </span>
                 <div>
                   <p className="font-medium">Adresse</p>
-                  <p className="text-ivory/70">{CHURCH.address}</p>
+                  <p className="text-ivory/70">{s.address}</p>
                 </div>
               </li>
               <li className="flex items-start gap-4">
@@ -44,8 +45,8 @@ export default function ContactPage() {
                 </span>
                 <div>
                   <p className="font-medium">Téléphone</p>
-                  <a href={`tel:${CHURCH.phone}`} className="text-ivory/70 hover:text-gold">
-                    {CHURCH.phone}
+                  <a href={`tel:${s.phone}`} className="text-ivory/70 hover:text-gold">
+                    {s.phone}
                   </a>
                 </div>
               </li>
@@ -55,8 +56,8 @@ export default function ContactPage() {
                 </span>
                 <div>
                   <p className="font-medium">Email</p>
-                  <a href={`mailto:${CHURCH.email}`} className="text-ivory/70 hover:text-gold">
-                    {CHURCH.email}
+                  <a href={`mailto:${s.email}`} className="text-ivory/70 hover:text-gold">
+                    {s.email}
                   </a>
                 </div>
               </li>
@@ -66,19 +67,19 @@ export default function ContactPage() {
                 </span>
                 <div>
                   <p className="font-medium">Horaires des cultes</p>
-                  <p className="text-ivory/70">Dimanche 9h00 · Mercredi 18h00 · Vendredi 18h00</p>
+                  <p className="text-ivory/70">{s.serviceHours}</p>
                 </div>
               </li>
             </ul>
 
             <div className="mt-8 flex flex-wrap gap-3">
               <Button asChild variant="whatsapp">
-                <a href={`https://wa.me/${CHURCH.whatsapp}`} target="_blank" rel="noreferrer">
+                <a href={`https://wa.me/${s.whatsapp}`} target="_blank" rel="noreferrer">
                   WhatsApp
                 </a>
               </Button>
               <a
-                href={CHURCH.social.youtube}
+                href={s.social.youtube}
                 target="_blank"
                 rel="noreferrer"
                 className="grid h-11 w-11 place-items-center rounded-full bg-white/5 text-ivory hover:bg-gold hover:text-night"
@@ -87,7 +88,7 @@ export default function ContactPage() {
                 <Youtube className="h-5 w-5" />
               </a>
               <a
-                href={CHURCH.social.facebook}
+                href={s.social.facebook}
                 target="_blank"
                 rel="noreferrer"
                 className="grid h-11 w-11 place-items-center rounded-full bg-white/5 text-ivory hover:bg-gold hover:text-night"

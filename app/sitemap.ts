@@ -1,9 +1,9 @@
 import type { MetadataRoute } from "next";
 import { NAV_LINKS } from "@/lib/church";
-import { sermons, albums } from "@/lib/data";
+import { getSermons, getAlbums } from "@/lib/sanity/queries";
 import { siteConfig } from "@/lib/site";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
   const staticRoutes = NAV_LINKS.map((l) => ({
     url: `${siteConfig.url}${l.href === "/" ? "" : l.href}`,
@@ -21,14 +21,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
     changeFrequency: "monthly" as const,
     priority: r.priority,
   }));
+
+  const [sermons, albums] = await Promise.all([
+    getSermons(100).catch(() => []),
+    getAlbums().catch(() => []),
+  ]);
+
   const sermonRoutes = sermons.map((s) => ({
-    url: `${siteConfig.url}/messages/${s.slug}`,
+    url: `${siteConfig.url}/messages/${s.slug.current}`,
     lastModified: now,
     changeFrequency: "monthly" as const,
     priority: 0.6,
   }));
   const albumRoutes = albums.map((a) => ({
-    url: `${siteConfig.url}/galerie/${a.slug}`,
+    url: `${siteConfig.url}/galerie/${a.slug.current}`,
     lastModified: now,
     changeFrequency: "monthly" as const,
     priority: 0.5,

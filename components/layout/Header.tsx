@@ -4,12 +4,20 @@ import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X, Youtube, Facebook } from "lucide-react";
-import { NAV_LINKS, CHURCH } from "@/lib/church";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+import type { ResolvedSettings } from "@/lib/sanity/settings";
 
-export function Header() {
+type NavLink = { href: string; label: string };
+
+export function Header({
+  settings,
+  navLinks,
+}: {
+  settings: ResolvedSettings;
+  navLinks: readonly NavLink[];
+}) {
   const pathname = usePathname();
   const [open, setOpen] = React.useState(false);
 
@@ -17,23 +25,23 @@ export function Header() {
     <header className="fixed inset-x-0 top-0 z-50 border-b border-white/5 bg-night/70 backdrop-blur-xl">
       <div className="container-section flex h-16 items-center justify-between md:h-20">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2" aria-label={CHURCH.name}>
+        <Link href="/" className="flex items-center gap-2" aria-label={settings.name}>
           <Image
             src="/logo.png"
-            alt={`${CHURCH.name} — logo`}
+            alt={`${settings.name} — logo`}
             width={40}
             height={40}
             priority
             className="h-10 w-10 rounded-full object-cover ring-1 ring-gold/30"
           />
           <span className="hidden font-display text-lg tracking-tight-48 text-ivory sm:block">
-            Temple des Vainqueurs
+            {settings.name}
           </span>
         </Link>
 
         {/* Nav desktop */}
         <nav className="hidden items-center gap-1 lg:flex" aria-label="Navigation principale">
-          {NAV_LINKS.map((l) => (
+          {navLinks.map((l) => (
             <Link
               key={l.href}
               href={l.href}
@@ -52,7 +60,7 @@ export function Header() {
         {/* CTA + réseaux */}
         <div className="hidden items-center gap-3 lg:flex">
           <a
-            href={CHURCH.social.youtube}
+            href={settings.social.youtube}
             target="_blank"
             rel="noreferrer"
             aria-label="YouTube"
@@ -61,7 +69,7 @@ export function Header() {
             <Youtube className="h-5 w-5" />
           </a>
           <a
-            href={CHURCH.social.facebook}
+            href={settings.social.facebook}
             target="_blank"
             rel="noreferrer"
             aria-label="Facebook"
@@ -70,7 +78,7 @@ export function Header() {
             <Facebook className="h-5 w-5" />
           </a>
           <Button asChild size="sm" variant="whatsapp">
-            <a href={`https://wa.me/${CHURCH.whatsapp}`} target="_blank" rel="noreferrer">
+            <a href={`https://wa.me/${settings.whatsapp}`} target="_blank" rel="noreferrer">
               WhatsApp
             </a>
           </Button>
@@ -94,7 +102,7 @@ export function Header() {
             className="container-section flex flex-col gap-1 py-4"
             aria-label="Navigation mobile"
           >
-            {NAV_LINKS.map((l) => (
+            {navLinks.map((l) => (
               <Link
                 key={l.href}
                 href={l.href}
@@ -110,7 +118,7 @@ export function Header() {
               </Link>
             ))}
             <Button asChild variant="whatsapp" className="mt-3 w-full">
-              <a href={`https://wa.me/${CHURCH.whatsapp}`} target="_blank" rel="noreferrer">
+              <a href={`https://wa.me/${settings.whatsapp}`} target="_blank" rel="noreferrer">
                 Nous écrire sur WhatsApp
               </a>
             </Button>

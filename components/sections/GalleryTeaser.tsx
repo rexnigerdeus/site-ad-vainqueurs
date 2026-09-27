@@ -3,10 +3,11 @@
 import Link from "next/link";
 import { ArrowRight, Images } from "lucide-react";
 import { Reveal, StaggerGroup, StaggerItem } from "@/components/motion/Reveal";
-import { albums } from "@/lib/data";
+import type { Album } from "@/lib/sanity/queries";
 import { formatDateFr } from "@/lib/utils";
 
-export function GalleryTeaser() {
+export function GalleryTeaser({ albums }: { albums: Album[] }) {
+  if (!albums || albums.length === 0) return null;
   return (
     <section className="bg-night py-20 lg:py-28">
       <div className="container-section">
@@ -29,9 +30,9 @@ export function GalleryTeaser() {
 
         <StaggerGroup className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {albums.map((album) => (
-            <StaggerItem key={album.id}>
+            <StaggerItem key={album._id}>
               <Link
-                href={`/galerie/${album.slug}`}
+                href={`/galerie/${album.slug.current}`}
                 className="group relative block overflow-hidden rounded-6"
               >
                 <div className="aspect-[4/3] overflow-hidden bg-night/40">

@@ -1,25 +1,30 @@
 import { Quote } from "lucide-react";
 import { Reveal } from "@/components/motion/Reveal";
+import type { Testimonial as TestimonialType } from "@/lib/sanity/queries";
 
-const testimonials = [
+const FALLBACK: TestimonialType[] = [
   {
+    _id: "t1",
     text: "Le Temple des Vainqueurs a changé ma vie. J'y ai trouvé une famille spirituelle et un berger fidèle.",
     author: "Sœur Mariam",
     role: "Membre depuis 2018",
   },
   {
+    _id: "t2",
     text: "Les enseignements bibliques m'ont donné des fondations solides pour ma foi et mon quotidien.",
     author: "Frère Jean-Luc",
     role: "Jeune vainqueur",
   },
   {
+    _id: "t3",
     text: "Même depuis la diaspora, je suis les prédications en ligne et je reste connecté à mon église.",
     author: "Frère David",
     role: "Diaspora — France",
   },
 ];
 
-export function Testimonials() {
+export function Testimonials({ testimonials }: { testimonials?: TestimonialType[] }) {
+  const data = testimonials?.length ? testimonials : FALLBACK;
   return (
     <section className="bg-ivory py-20 text-night lg:py-28">
       <div className="container-section">
@@ -33,7 +38,7 @@ export function Testimonials() {
         </Reveal>
 
         <div className="grid gap-6 md:grid-cols-3">
-          {testimonials.map((t, i) => (
+          {data.map((t, i) => (
             <Reveal
               key={t.author}
               delay={i * 0.1}

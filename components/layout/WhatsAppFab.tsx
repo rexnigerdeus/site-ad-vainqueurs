@@ -2,12 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { MessageCircle } from "lucide-react";
-import { CHURCH } from "@/lib/church";
 
 /**
  * Bouton flottant WhatsApp — visible après 600px de scroll.
  */
-export function WhatsAppFab() {
+export function WhatsAppFab({ whatsapp }: { whatsapp: string }) {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -19,7 +18,7 @@ export function WhatsAppFab() {
 
   return (
     <a
-      href={`https://wa.me/${CHURCH.whatsapp}`}
+      href={`https://wa.me/${whatsapp}`}
       target="_blank"
       rel="noreferrer"
       aria-label="Nous contacter sur WhatsApp"

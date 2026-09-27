@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Play, ArrowRight } from "lucide-react";
 import { PageHeader } from "@/components/sections/PageHeader";
 import { Reveal, StaggerGroup, StaggerItem } from "@/components/motion/Reveal";
-import { sermons } from "@/lib/data";
+import { getSermons, type Sermon } from "@/lib/sanity/queries";
 import { formatDateFr } from "@/lib/utils";
 
 export const metadata: Metadata = {
@@ -12,7 +12,8 @@ export const metadata: Metadata = {
     "Cultes en direct et rediffusions du Temple des Vainqueurs — depuis notre chaîne YouTube.",
 };
 
-export default function MessagesPage() {
+export default async function MessagesPage() {
+  const sermons = await getSermons(12).catch(() => [] as Sermon[]);
   return (
     <>
       <PageHeader
@@ -42,9 +43,9 @@ export default function MessagesPage() {
           </Reveal>
           <StaggerGroup className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {sermons.map((s) => (
-              <StaggerItem key={s.id}>
+              <StaggerItem key={s._id}>
                 <Link
-                  href={`/messages/${s.slug}`}
+                  href={`/messages/${s.slug.current}`}
                   className="group block overflow-hidden rounded-6 border border-night/10 bg-white transition-all hover:shadow-xl"
                 >
                   <div className="relative aspect-video overflow-hidden bg-night/10">
