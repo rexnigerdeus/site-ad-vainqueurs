@@ -1,5 +1,6 @@
 import { PageHeader } from "@/components/sections/PageHeader";
 import { PenielCountdown } from "@/components/sections/PenielCountdown";
+import Image from "next/image";
 import { Reveal } from "@/components/motion/Reveal";
 import { Flame, Calendar, Clock, MapPin, BookOpen, Users } from "lucide-react";
 import { getSettings } from "@/lib/sanity/settings";
@@ -9,20 +10,50 @@ import { PortableText } from "@portabletext/react";
 
 export function generateMetadata() {
   return pageMetadata("peniel", {
-    title: "PENIEL 2026",
+    title: "PENIEL 2026 — Marche devant ma face et sois intègre",
     description:
-      "PENIEL 2026 — Mois de jeûne et de prière du Temple des Vainqueurs. Du 1er au 30 novembre 2026.",
+      "PENIEL 2026 — 4 semaines de jeûne et de prière au Temple des Vainqueurs, du 1er au 29 novembre 2026. Thème : « Marche devant ma face et sois intègre » (Genèse 17:1).",
   });
 }
 
+// Source : affiches officielles PENIEL 2026 (public/peniel/).
 const FALLBACK_PROGRAMME = [
-  { day: "1er Nov.", title: "Culte d'ouverture", description: "Lancement du mois de jeûne et d'intercession.", time: "18h00" },
-  { day: "Chaque jour", title: "Temps de prière", description: "Intercession personnelle et communautaire.", time: "05h30 & 18h00" },
-  { day: "Tous les vendredis", title: "Veillée d'intercession", description: "Nuit de prière communautaire.", time: "18h00" },
-  { day: "30 Nov.", title: "Culte d'action de grâces", description: "Clôture du mois de jeûne et de prière.", time: "18h00" },
+  // TODO PENIEL : culte d'ouverture absent des affiches — existence et heure à confirmer.
+  { day: "1er Nov.", title: "Culte d'ouverture", description: "Lancement des 4 semaines de jeûne et de prière.", time: "18h00" },
+  { day: "Lun. → Ven.", title: "Temps de prière", description: "Trois rendez-vous par jour : 05h30 – 06h30, 12h30 – 13h30 et 18h30 – 19h30.", time: "05h30 · 12h30 · 18h30" },
+  { day: "Samedi", title: "Temps de prière", description: "Deux rendez-vous : 05h30 – 06h30, puis 16h30 – 18h00.", time: "05h30 · 16h30" },
+  { day: "Dimanche", title: "Culte de louange et de célébration", description: "Le culte du dimanche matin.", time: "07h00 – 10h30" },
+  { day: "Dimanche soir", title: "Rencontre du soir", description: "Temps de prière du dimanche soir.", time: "16h30 – 18h30" },
+  // TODO PENIEL : heure de la veillée absente de l'affiche programme.
+  { day: "27 Nov.", title: "Veillée de prière", description: "Nuit de prière avec toute l'assemblée.", time: "18h00" },
+  // TODO PENIEL : culte de clôture absent des affiches — existence et heure à confirmer.
+  { day: "29 Nov.", title: "Culte d'action de grâces", description: "Clôture des 4 semaines de jeûne et de prière.", time: "18h00" },
+];
+
+const SOUS_THEMES = [
+  "Ton Dieu ne t'a pas oublié.",
+  "Ne t'arrête pas.",
+  "Sois intègre.",
+  "Ton Dieu t'annonce quelque chose de grand.",
+];
+
+const AFFICHES = [
+  {
+    src: "/peniel/peniel-2026-affiche-principale.jpg",
+    alt: "Affiche PENIEL 2026 : « Marche devant ma face et sois intègre » (Genèse 17:1), 4 semaines de jeûne et de prière du 1er au 29 novembre 2026",
+  },
+  {
+    src: "/peniel/peniel-2026-programme.jpg",
+    alt: "Affiche du programme hebdomadaire de PENIEL 2026 : horaires de prière du lundi au dimanche et veillée de prière du 27 novembre 2026",
+  },
+  {
+    src: "/peniel/peniel-2026-sous-themes.jpg",
+    alt: "Affiche des quatre sous-thèmes de PENIEL 2026",
+  },
 ];
 
 const FALLBACK_VERSES = [
+  { reference: "Genèse 17:1", text: "Je suis le Dieu tout-puissant. Marche devant ma face, et sois intègre." },
   { reference: "Genèse 32:30", text: "Jacob appela ce lieu du nom de Peniel : J'ai vu Dieu face à face, et mon âme a été délivrée." },
   { reference: "Matthieu 17:21", text: "Cette sorte de démon ne sort que par la prière et le jeûne." },
   { reference: "Ésaïe 58:6", text: "Voici le jeûne que je préfère : dénouer les chaînes de la méchanceté, détacher les liens du joug." },
@@ -37,7 +68,7 @@ export default async function PenielPage() {
 
   const programme = content?.programme?.length ? content.programme : FALLBACK_PROGRAMME;
   const verses = content?.verses?.length ? content.verses : FALLBACK_VERSES;
-  const dates = content?.eventInfo?.dates || "1er — 30 Novembre 2026";
+  const dates = content?.eventInfo?.dates || "1er — 29 Novembre 2026";
   const audience = content?.eventInfo?.audience || "Toute la communauté";
   const header = content?.header;
   const penielDate = penielEvent?.date || "2026-11-01T00:00:00+00:00";
@@ -46,7 +77,7 @@ export default async function PenielPage() {
       <PageHeader
         eyebrow={header?.eyebrow || "Événement spécial"}
         title={header?.title || "PENIEL 2026"}
-        description={header?.description || "Maison de Dieu, porte du ciel. Un mois entier consacré au jeûne et à la prière, du 1er au 30 novembre 2026."}
+        description={header?.description || "« Marche devant ma face et sois intègre » (Genèse 17:1). 4 semaines de jeûne et de prière, du 1er au 29 novembre 2026."}
       />
 
       {/* Compte à rebours */}
@@ -61,7 +92,7 @@ export default async function PenielPage() {
               Vision
             </span>
             <h2 className="mt-5 font-display text-3xl leading-tight tracking-tight-48 md:text-4xl">
-              {content?.heroTitle || "Le combat spirituel d'un peuple en prière"}
+              {content?.heroTitle || "Marche devant ma face et sois intègre"}
             </h2>
             {content?.body?.length ? (
               <div className="mt-6 space-y-4 text-lg text-night/70">
@@ -70,18 +101,32 @@ export default async function PenielPage() {
             ) : (
               <>
                 <p className="mt-6 text-lg text-night/70">
-                  PENIEL 2026 est un appel à la communauté du Temple des Vainqueurs à
-                  s'engager dans un mois complet de jeûne et de prière. À l'image de
-                  Jacob qui lutta avec l'ange et vit Dieu face à face, nous voulons
-                  entrer dans une dimension de communion et de percée spirituelle.
+                  PENIEL 2026 appelle la communauté du Temple des Vainqueurs à
+                  4 semaines de jeûne et de prière, du 1er au 29 novembre, autour
+                  du thème « Marche devant ma face et sois intègre » (Genèse 17:1).
+                  À l'image de Jacob qui lutta avec l'ange et vit Dieu face à face,
+                  nous voulons entrer dans une dimension de communion et de percée
+                  spirituelle.
                 </p>
                 <p className="mt-4 text-lg text-night/70">
-                  Chaque jour, des temps de prière sont organisés. Chaque vendredi,
-                  une veillée d'intercession réunit toute l'assemblée pour un combat
-                  spirituel commun.
+                  Chaque jour, des temps de prière sont organisés au temple. Le
+                  vendredi 27 novembre, une veillée de prière réunit toute
+                  l'assemblée pour un combat spirituel commun.
                 </p>
               </>
             )}
+
+            <h3 className="mt-8 font-display text-xl tracking-tight-48">Les sous-thèmes</h3>
+            <ol className="mt-4 space-y-3">
+              {SOUS_THEMES.map((theme, i) => (
+                <li key={theme} className="flex items-baseline gap-3">
+                  <span className="shrink-0 text-sm font-semibold uppercase tracking-wider text-gold-600">
+                    Semaine {i + 1}
+                  </span>
+                  <span className="text-lg text-night">{theme}</span>
+                </li>
+              ))}
+            </ol>
           </Reveal>
 
           <Reveal delay={0.1} className="grid gap-4">
@@ -132,6 +177,33 @@ export default async function PenielPage() {
               </Reveal>
             ))}
           </div>
+
+          {/* Affiches : défilement horizontal sur téléphone, 3 colonnes au-delà */}
+          <Reveal className="mx-auto mt-16 max-w-5xl">
+            <h3 className="text-center font-display text-2xl tracking-tight-48">
+              Les affiches
+            </h3>
+            <div className="snap-carousel mt-8 sm:grid sm:grid-cols-3 sm:overflow-visible">
+              {AFFICHES.map((a) => (
+                <a
+                  key={a.src}
+                  href={a.src}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="block w-[75vw] max-w-xs overflow-hidden rounded-6 border border-white/10 sm:w-auto sm:max-w-none"
+                >
+                  <Image
+                    src={a.src}
+                    alt={a.alt}
+                    width={1131}
+                    height={1600}
+                    sizes="(min-width: 1024px) 330px, (min-width: 640px) 33vw, 75vw"
+                    className="h-auto w-full"
+                  />
+                </a>
+              ))}
+            </div>
+          </Reveal>
         </div>
       </section>
 
@@ -166,7 +238,7 @@ export default async function PenielPage() {
             </h2>
             <p className="mt-3 max-w-2xl mx-auto text-night/70">
               Le jeûne et la prière sont des armes spirituelles puissantes.
-              Préparez votre esprit, votre corps et votre agenda pour vivre un mois
+              Préparez votre esprit, votre corps et votre agenda pour vivre 4 semaines
               d'intimité profonde avec le Seigneur.
             </p>
           </Reveal>

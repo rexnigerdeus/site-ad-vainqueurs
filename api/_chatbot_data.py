@@ -75,13 +75,14 @@ def reponse_prochaines_dates(aujourdhui=None):
 # ---------------------------------------------------------------------------
 EVENEMENTS = [
     {
-        "titre": "PENIEL 2026 — mois de jeûne et de prière",
+        "titre": "PENIEL 2026 — 4 semaines de jeûne et de prière (« Marche devant ma face et sois intègre », Genèse 17:1)",
         "debut": date(2026, 11, 1),
-        "fin": date(2026, 11, 30),
+        "fin": date(2026, 11, 29),
         "details": [
             "Du lundi au vendredi : prières de 5h30 à 6h30, de 12h30 à 13h30 et de 18h30 à 19h30",
-            "Le samedi : prières de 5h30 à 6h30, puis de 16h à 18h",
-            "Le dimanche : culte normal à 7h00, puis prière de 16h à 18h",
+            "Le samedi : prières de 5h30 à 6h30, puis de 16h30 à 18h00",
+            "Le dimanche : culte de louange et de célébration de 7h00 à 10h30, puis rencontre du soir de 16h30 à 18h30",
+            "Veillée de prière le vendredi 27 novembre 2026",
         ],
     },
 ]
