@@ -40,7 +40,8 @@ const FALLBACK: ResolvedSettings = {
   email: CHURCH.email,
   social: { ...CHURCH.social },
   donations: { ...CHURCH.donations },
-  serviceHours: "Dimanche 9h00 · Mercredi 18h00 · Vendredi 18h00",
+  serviceHours:
+    "Culte : dimanche 07h00 – 10h00 · Jeunes : dimanche dès 15h00 · Jeûne et prière : 1er dimanche du mois dès 07h00 · Veillée : dernier vendredi du mois à 21h00",
   mapQuery: "Vridi Port-Bouet Abidjan",
 };
 

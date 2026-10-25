@@ -10,16 +10,57 @@ export function generateMetadata() {
   return pageMetadata("activities", {
     title: "Activités & Galerie",
     description:
-      "Cultes hebdomadaires, étude biblique, veillées d'intercession, événements spéciaux et albums photos du Temple des Vainqueurs.",
+      "Cultes du dimanche, jeûne et prière, veillées, rencontres des jeunes, événements spéciaux et albums photos du Temple des Vainqueurs.",
   });
 }
 
-const FALLBACK_PROGRAM: WeeklyProgramItem[] = [
-  { _id: "w1", day: "Dimanche", time: "09h00", title: "Culte dominical", description: "Louange, adoration et prédication." },
-  { _id: "w2", day: "Mercredi", time: "18h00", title: "Étude biblique", description: "Enseignement approfondi de la Parole." },
-  { _id: "w3", day: "Vendredi", time: "18h00", title: "Veillée d'intercession", description: "Nuit de prière (dernier vendredi du mois)." },
-  { _id: "w4", day: "Samedi", time: "15h00", title: "Jeunes vainqueurs", description: "Rassemblement des jeunes de l'église." },
+/**
+ * Rendez-vous réguliers de l'église : toujours affichés.
+ * Ceux saisis dans Sanity s'y ajoutent (et remplacent celui du code
+ * s'ils ont le même jour et le même titre).
+ */
+const BASE_PROGRAM: WeeklyProgramItem[] = [
+  { _id: "w1", day: "Dimanche", time: "07h00 – 10h00", title: "Culte dominical", description: "Louange, adoration et prédication." },
+  { _id: "w2", day: "Dimanche", time: "À partir de 15h00", title: "Rencontre des jeunes", description: "Rassemblement des jeunes de l'église." },
+  { _id: "w3", day: "Premier dimanche du mois", time: "À partir de 07h00", title: "Jeûne et prière", description: "Toute l'assemblée se consacre au jeûne et à la prière." },
+  { _id: "w4", day: "Dernier vendredi du mois", time: "21h00", title: "Veillée", description: "Nuit de prière de l'assemblée." },
 ];
+
+const WEEK_DAYS = ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"];
+
+/** Minuscules, sans accents ni espaces en trop (pour comparer et trier). */
+function normalize(text = "") {
+  return text
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/[’‘]/g, "'")
+    .toLowerCase()
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+/** Rang dans la semaine (lundi = 0) ; « Premier dimanche du mois » compte comme dimanche. */
+function dayRank(day: string) {
+  const words = normalize(day).split(/[^a-z]+/);
+  const index = WEEK_DAYS.findIndex((d) => words.includes(d));
+  return index === -1 ? WEEK_DAYS.length : index;
+}
+
+/** Première heure trouvée, en minutes : « 7h00 », « 07h00 », « 07:00 » ou « 7h ». */
+function timeRank(time: string) {
+  const match = normalize(time).match(/(\d{1,2})\s*[h:]\s*(\d{2})?/);
+  return match ? Number(match[1]) * 60 + Number(match[2] ?? 0) : Number.POSITIVE_INFINITY;
+}
+
+function mergeProgram(base: WeeklyProgramItem[], fromSanity: WeeklyProgramItem[]) {
+  const byKey = new Map<string, WeeklyProgramItem>();
+  for (const item of [...base, ...fromSanity]) {
+    byKey.set(`${normalize(item.day)}|${normalize(item.title)}`, item);
+  }
+  return [...byKey.values()].sort(
+    (a, b) => dayRank(a.day) - dayRank(b.day) || timeRank(a.time) - timeRank(b.time)
+  );
+}
 
 export default async function ActivitesPage() {
   const [events, albums, weeklyProgram, content] = await Promise.all([
@@ -29,7 +70,7 @@ export default async function ActivitesPage() {
     getPageContent("activities").catch(() => null),
   ]);
 
-  const program = weeklyProgram.length ? weeklyProgram : FALLBACK_PROGRAM;
+  const program = mergeProgram(BASE_PROGRAM, weeklyProgram ?? []);
   const header = content?.header;
   return (
     <>
@@ -53,7 +94,7 @@ export default async function ActivitesPage() {
                 key={p._id}
                 className="flex flex-col gap-3 rounded-6 border border-night/10 bg-white p-6 sm:flex-row sm:items-center"
               >
-                <div className="flex w-32 shrink-0 flex-col">
+                <div className="flex shrink-0 flex-col sm:w-32">
                   <span className="font-display text-xl text-gold-600">{p.day}</span>
                   <span className="flex items-center gap-1 text-sm text-night/60">
                     <Clock className="h-3.5 w-3.5" /> {p.time}

@@ -4,6 +4,7 @@ import { Reveal, StaggerGroup, StaggerItem } from "@/components/motion/Reveal";
 import { Cross } from "lucide-react";
 import { getTeam, getPageContent, type TeamMember, type PageContent } from "@/lib/sanity/queries";
 import { pageMetadata } from "@/lib/sanity/metadata";
+import { portraitUrl } from "@/lib/sanity/image";
 import { valueIcons } from "@/lib/icons";
 import { PortableText } from "@portabletext/react";
 
@@ -132,10 +133,10 @@ export default async function AboutPage() {
                   key={m._id}
                   className="flex items-start gap-5 rounded-6 border border-night/10 bg-white p-6"
                 >
-                  {m.photo ? (
+                  {m.photo?.asset ? (
                     <Image
-                      src={m.photo}
-                      alt={m.name}
+                      src={portraitUrl(m.photo, 160)}
+                      alt={/^pasteur/i.test(m.role) ? `Pasteur ${m.name.trim()}` : `${m.name.trim()}, ${m.role}`}
                       width={80}
                       height={80}
                       className="h-20 w-20 shrink-0 rounded-full object-cover ring-2 ring-gold/30"

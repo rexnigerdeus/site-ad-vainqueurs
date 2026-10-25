@@ -101,8 +101,9 @@ export default defineType({
       name: "serviceHours",
       title: "Horaires des cultes (texte libre)",
       type: "string",
-      description: "Ex : Dimanche 9h00 · Mercredi 18h00 · Vendredi 18h00",
-      initialValue: "Dimanche 9h00 · Mercredi 18h00 · Vendredi 18h00",
+      description: "Ex : Culte : dimanche 07h00 – 10h00 · Veillée : dernier vendredi du mois à 21h00",
+      initialValue:
+        "Culte : dimanche 07h00 – 10h00 · Jeunes : dimanche dès 15h00 · Jeûne et prière : 1er dimanche du mois dès 07h00 · Veillée : dernier vendredi du mois à 21h00",
     }),
     defineField({
       name: "mapQuery",

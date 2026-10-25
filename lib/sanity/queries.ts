@@ -1,4 +1,5 @@
 import { sanityClient } from "./client";
+import type { SanityPhoto } from "./image";
 
 /**
  * Requêtes GROQ — une fonction par type de contenu.
@@ -110,7 +111,7 @@ export async function getAlbumBySlug(slug: string) {
 export async function getTeam() {
   return sanityClient.fetch<TeamMember[]>(
     `*[_type == "teamMember"] | order(order asc) {
-      _id, name, role, bio, "photo": photo.asset->url
+      _id, name, role, bio, photo{asset, hotspot, crop}
     }`,
     {},
     { next: { revalidate: 3600 } }
@@ -242,7 +243,7 @@ export type TeamMember = {
   name: string;
   role: string;
   bio: string;
-  photo?: string;
+  photo?: SanityPhoto | null;
 };
 
 export type FaqItem = { _id: string; q: string; a: string };

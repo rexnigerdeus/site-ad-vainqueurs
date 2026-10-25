@@ -26,7 +26,7 @@ export function CtaVisit({ settings }: { settings?: Settings }) {
           </h2>
           <p className="mx-auto mt-5 max-w-xl text-lg text-ivory/70">
             Le temple vous accueille à {quartier}, {commune}, {city}.
-            Le dimanche à 9h00 pour le culte dominical.
+            Le dimanche de 07h00 à 10h00 pour le culte dominical.
           </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Button asChild size="lg">
