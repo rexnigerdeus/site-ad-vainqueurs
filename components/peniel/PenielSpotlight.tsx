@@ -3,12 +3,11 @@ import { ArrowRight } from "lucide-react";
 import { PENIEL } from "@/lib/peniel";
 import { ThemeTitle } from "./ThemeTitle";
 import { SubThemes } from "./SubThemes";
-import { PenielSchedule } from "./PenielSchedule";
 import { DatesMark } from "./DatesMark";
 import { ShareButton } from "./ShareButton";
 import { Reveal } from "@/components/motion/Reveal";
 
-/** Bloc PENIEL de l'accueil : thème, sous-thèmes et programme du mois. */
+/** Bloc PENIEL de l'accueil : thème et sous-thèmes (le programme est sur la page PENIEL). */
 export function PenielSpotlight() {
   return (
     <section aria-labelledby="peniel-spotlight" className="grain relative overflow-hidden bg-peniel-sky py-20 text-white lg:py-28">
@@ -16,7 +15,7 @@ export function PenielSpotlight() {
       <div className="orb -left-32 bottom-0 h-96 w-96 bg-peniel-orange/25 [animation-delay:-6s]" />
 
       <div className="container-section relative grid gap-14 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
-        {/* Sur grand écran, le thème reste visible pendant qu'on parcourt sous-thèmes et programme */}
+        {/* Sur grand écran, le thème reste visible pendant qu'on parcourt les sous-thèmes */}
         <div className="lg:sticky lg:top-28 lg:self-start">
           <p className="eyebrow text-peniel-amber">PENIEL 2026 · ce mois-ci au temple</p>
           <h2 id="peniel-spotlight" className="sr-only">
@@ -48,16 +47,9 @@ export function PenielSpotlight() {
           </Reveal>
         </div>
 
-        <div className="space-y-12">
-          <div>
-            <h3 className="font-condensed text-4xl tracking-wide sm:text-5xl">Les sous-thèmes</h3>
-            <SubThemes className="mt-6" />
-          </div>
-          <div>
-            <h3 className="font-condensed text-4xl tracking-wide sm:text-5xl">Le programme du mois</h3>
-            <p className="mt-2 text-white/75">Du 1er au 29 novembre, toute l&apos;église suit ce programme.</p>
-            <PenielSchedule className="mt-6" />
-          </div>
+        <div>
+          <h3 className="font-condensed text-4xl tracking-wide sm:text-5xl">Les sous-thèmes</h3>
+          <SubThemes className="mt-6" />
         </div>
       </div>
     </section>

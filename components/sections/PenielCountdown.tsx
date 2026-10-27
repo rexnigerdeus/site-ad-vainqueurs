@@ -2,8 +2,6 @@
 
 import * as React from "react";
 import Image from "next/image";
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
 import { PENIEL } from "@/lib/peniel";
 import { cn } from "@/lib/utils";
 
@@ -108,12 +106,6 @@ export function PenielCountdown({ variant = "banner" }: { variant?: "banner" | "
           </h2>
         </div>
         <Timer t={t} size="lg" />
-        <Link
-          href="/peniel"
-          className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full bg-white px-5 py-2.5 text-sm font-bold text-peniel-deep transition-transform hover:scale-105 active:scale-95"
-        >
-          Le programme <ArrowRight className="h-4 w-4" />
-        </Link>
       </div>
     </section>
   );
