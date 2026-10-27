@@ -24,9 +24,11 @@ export function PenielSpotlight() {
           </h2>
           <ThemeTitle on="scroll" className="mt-10 text-[22vw] sm:text-[8.5rem] lg:text-[7rem] xl:text-[8.5rem]" />
           <Reveal>
-            <blockquote className="mt-8 max-w-xl border-l-4 border-peniel-amber pl-5">
-              <p className="font-sans text-lg italic text-white/90 sm:text-xl">« {PENIEL.verse.text} »</p>
-              <footer className="mt-2 text-sm font-bold uppercase tracking-wider text-peniel-amber">{PENIEL.verse.reference}</footer>
+            <blockquote className="mt-8 max-w-xl">
+              <p className="font-sans text-lg font-semibold italic leading-snug text-white sm:text-xl">« {PENIEL.verse.text} »</p>
+              <footer className="mt-3">
+                <span className="peniel-tag text-xs">{PENIEL.verse.reference}</span>
+              </footer>
             </blockquote>
             <DatesMark className="mt-10" />
             <div className="mt-10 flex flex-col gap-3 sm:flex-row">
