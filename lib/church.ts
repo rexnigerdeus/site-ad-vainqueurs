@@ -14,7 +14,7 @@ export const CHURCH = {
   phone: "+225 00 00 00 00", // À compléter
   whatsapp: "22500000000", // numéro sans + ni espaces
   email: "contact@templedesvainqueurs.com",
-  domain: "templedesvainqueurs.com",
+  domain: "www.advainqueurs.org", // site officiel (advainqueurs.org redirige ici)
   social: {
     youtube: "https://www.youtube.com/@advainqueurs",
     facebook: "https://www.facebook.com/Templevainqueurs7",

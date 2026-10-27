@@ -9,7 +9,7 @@ import { valueIcons } from "@/lib/icons";
 import { PortableText } from "@portabletext/react";
 
 export function generateMetadata() {
-  return pageMetadata("about", {
+  return pageMetadata("about", "/a-propos", {
     title: "À propos",
     description:
       "Histoire, vision, mission et équipe pastorale du Temple des Vainqueurs — Assemblées de Dieu, Abidjan Port-Bouët.",

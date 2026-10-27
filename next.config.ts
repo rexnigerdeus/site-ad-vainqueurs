@@ -10,6 +10,17 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "cdn.sanity.io" },
     ],
   },
+  // L'adresse Vercel renvoie vers le domaine officiel : une seule adresse indexée par Google.
+  async redirects() {
+    return [
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "site-ad-vainqueurs.vercel.app" }],
+        destination: "https://www.advainqueurs.org/:path*",
+        permanent: true,
+      },
+    ];
+  },
   experimental: {
     optimizePackageImports: ["lucide-react", "framer-motion"],
   },

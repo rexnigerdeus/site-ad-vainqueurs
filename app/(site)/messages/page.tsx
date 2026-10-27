@@ -9,7 +9,7 @@ import { pageMetadata } from "@/lib/sanity/metadata";
 import { formatDateFr } from "@/lib/utils";
 
 export function generateMetadata() {
-  return pageMetadata("messages", {
+  return pageMetadata("messages", "/messages", {
     title: "Messages & Prédications",
     description:
       "Cultes en direct et rediffusions du Temple des Vainqueurs — depuis notre chaîne YouTube.",

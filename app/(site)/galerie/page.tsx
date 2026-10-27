@@ -7,7 +7,7 @@ import { pageMetadata } from "@/lib/sanity/metadata";
 import { formatDateFr } from "@/lib/utils";
 
 export function generateMetadata() {
-  return pageMetadata("gallery", {
+  return pageMetadata("gallery", "/galerie", {
     title: "Galerie multimédia",
     description:
       "Albums photos et vidéos des activités, cultes et moments forts du Temple des Vainqueurs.",

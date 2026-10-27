@@ -36,3 +36,7 @@ next-env.d.ts
 .venv/
 __pycache__/
 .vercel
+
+# impeccable (cache local du hook de design)
+/.impeccable/hook.cache.json
+/.impeccable/config.local.json

@@ -1,0 +1,44 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "gradient-text",
+        "value": "*",
+        "files": [
+          "scripts/og/og.html"
+        ],
+        "createdAt": "2026-10-27T17:52:49.587Z",
+        "reason": "Charte officielle PENIEL : MARCHE / INTÈGRE en dégradé orange comme sur les affiches"
+      },
+      {
+        "rule": "low-contrast",
+        "value": "*",
+        "files": [
+          "scripts/og/og.html"
+        ],
+        "createdAt": "2026-10-27T17:52:49.866Z",
+        "reason": "Faux positif : les deux cartes sont mesurées superposées ; l'image rendue a un contraste correct, les mots manuscrits sont un filigrane décoratif de l'affiche"
+      },
+      {
+        "rule": "clipped-overflow-container",
+        "value": "*",
+        "files": [
+          "scripts/og/og.html"
+        ],
+        "createdAt": "2026-10-27T17:52:50.220Z",
+        "reason": "Gabarit d'image fixe 1200x630 : le rognage est voulu"
+      },
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          "scripts/og/og.html"
+        ],
+        "createdAt": "2026-10-27T17:53:18.088Z",
+        "reason": "Faux positif : le contenu est placé en absolu avec des marges de 50 à 90 px dans le canevas 1200x630"
+      }
+    ]
+  }
+}

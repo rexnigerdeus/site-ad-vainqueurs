@@ -10,7 +10,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     url: `${siteConfig.url}${l.href === "/" ? "" : l.href}`,
     lastModified: now,
     changeFrequency: "weekly" as const,
-    priority: l.href === "/" ? 1 : 0.8,
+    priority: l.href === "/" ? 1 : l.href === "/peniel" ? 0.9 : 0.8,
   }));
   // Routes additionnelles non présentes dans la nav principale
   const extraRoutes = [

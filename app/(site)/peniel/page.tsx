@@ -14,19 +14,21 @@ import { ShareButton } from "@/components/peniel/ShareButton";
 import { PosterFloat } from "@/components/peniel/PosterFloat";
 import { getSettings } from "@/lib/sanity/settings";
 import { getPageContent, type PageContent } from "@/lib/sanity/queries";
-import { pageMetadata } from "@/lib/sanity/metadata";
+import { buildMetadata, jsonLdPeniel, penielShare } from "@/lib/site";
 import { PENIEL, penielPhase } from "@/lib/peniel";
 
+// L'aperçu de partage est toujours celui de PENIEL (image « lancement » jusqu'au 31 octobre).
 export async function generateMetadata() {
-  const metadata = await pageMetadata("peniel", {
-    title: "PENIEL 2026 — Marche devant ma face et sois intègre",
+  const content = await getPageContent("peniel").catch(() => null);
+  return buildMetadata({
+    title: content?.seo?.title || "PENIEL 2026 — Marche devant ma face et sois intègre",
     description:
+      content?.seo?.description ||
       "PENIEL 2026 — 4 semaines de jeûne et de prière au Temple des Vainqueurs, du 1er au 29 novembre 2026. Thème : « Marche devant ma face et sois intègre » (Genèse 17:1).",
+    path: "/peniel",
+    share: penielShare(),
+    image: penielShare().image,
   });
-  return {
-    ...metadata,
-    openGraph: metadata.openGraph ?? { images: [{ url: PENIEL.cover.src, width: PENIEL.cover.width, height: PENIEL.cover.height }] },
-  };
 }
 
 const AFFICHES = [
@@ -70,6 +72,7 @@ export default async function PenielPage() {
 
   return (
     <div className="bg-peniel-ink">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdPeniel) }} />
       {/* En-tête : le thème, composé comme l'affiche */}
       <section className="grain relative overflow-hidden bg-peniel-sky pb-24 pt-10 text-white sm:pb-28 lg:pb-32 lg:pt-16">
         <Image

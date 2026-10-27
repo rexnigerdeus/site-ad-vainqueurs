@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Great+Vibes&family=Poppins:ital,wght@0,500;0,600;0,700;0,800;0,900;1,800;1,900&display=block" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  [hidden] { display: none !important; }
+  html, body { width: 1200px; height: 630px; overflow: hidden; }
+  body { font-family: Poppins, sans-serif; color: #fff; }
+  .card { position: relative; width: 1200px; height: 630px; overflow: hidden; }
+  .fire { background: linear-gradient(100deg, #E8411F 0%, #F15A24 30%, #F7941D 65%, #FBB03B 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .tag { display: inline-block; transform: skewX(-6deg); background: #E1262D; border-radius: 3px; padding: 4px 14px; font-weight: 800; text-transform: uppercase; color: #fff; box-shadow: 0 8px 18px rgba(0,0,0,.25); }
+
+  /* ---------- PENIEL ---------- */
+  .peniel { background:
+      radial-gradient(60% 80% at 100% 0%, rgba(34,168,230,.55), transparent 60%),
+      radial-gradient(50% 70% at 0% 100%, rgba(241,90,36,.35), transparent 60%),
+      linear-gradient(160deg, #1C1873 0%, #2B2896 55%, #3A35B5 100%); }
+  .peniel .poster { position: absolute; left: 58px; top: 50%; height: 548px; transform: translateY(-50%) rotate(-4deg); border-radius: 14px; box-shadow: 0 30px 60px rgba(0,0,0,.45); }
+  .peniel .right { position: absolute; left: 500px; right: 50px; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: center; }
+  .peniel .eyebrow { font-size: 17px; font-weight: 700; letter-spacing: .28em; text-transform: uppercase; color: #FBB03B; }
+  .peniel .launch { margin-top: 14px; align-self: flex-start; font-size: 20px; }
+  .wordmark { font-family: 'Great Vibes', cursive; font-size: 92px; line-height: 1; margin-top: 6px; }
+  .wordmark b { font-family: Poppins; font-weight: 900; font-style: italic; font-size: 40px; margin-left: 10px; }
+
+  .theme { position: relative; display: inline-block; font-family: 'Bebas Neue', sans-serif; text-transform: uppercase; font-size: 150px; margin-top: 18px; }
+  .theme .t-tag { position: absolute; top: -8px; left: 0; z-index: 2; font-size: 17px; line-height: 1.2; }
+  .theme .script { position: absolute; z-index: 0; font-family: 'Great Vibes', cursive; text-transform: none; line-height: 1; color: rgba(255,255,255,.22); }
+  .theme .s1 { left: -16px; top: 46px; font-size: 92px; }
+  .theme .s2 { right: -10px; bottom: -6px; font-size: 76px; }
+  .theme .lines { position: relative; z-index: 1; line-height: .84; }
+  .row { display: flex; gap: 9px; }
+  .row1 { align-items: flex-end; padding-top: 22px; }
+  .row2 { align-items: flex-start; }
+  .big { display: block; margin-top: -21px; padding-top: 21px; padding-right: 3px; }
+  .small { display: flex; flex-direction: column; font-size: .47em; line-height: .9; }
+  .row1 .small { margin-bottom: 9px; }
+  .row2 .small { margin-top: 8px; align-items: flex-end; }
+  .row2 .small .tag { margin-top: 10px; font-family: Poppins; font-size: 16px; text-transform: none; line-height: 1.2; }
+
+  .dates { display: flex; align-items: center; gap: 22px; margin-top: 26px; }
+  .dates .four { font-weight: 900; font-style: italic; font-size: 74px; line-height: .8; padding-right: 4px; }
+  .dates .weeks { display: flex; flex-direction: column; }
+  .dates .weeks span:first-child { font-weight: 900; font-size: 30px; line-height: 1; }
+  .dates .weeks span:last-child { font-weight: 500; font-size: 15px; margin-top: 4px; opacity: .92; }
+  .dates .sep { width: 1px; height: 64px; background: rgba(255,255,255,.5); }
+  .dates .num { display: flex; align-items: baseline; font-weight: 900; font-style: italic; }
+  .dates .num .n { font-size: 52px; line-height: 1; }
+  .dates .num .au { font-size: 17px; margin: 0 5px; }
+  .dates .nov { font-size: 12px; letter-spacing: .18em; margin-top: 6px; padding: 3px 10px; }
+  .url { position: absolute; right: 50px; bottom: 26px; font-size: 18px; font-weight: 700; letter-spacing: .04em; color: rgba(255,255,255,.85); }
+
+  /* ---------- ÉGLISE ---------- */
+  .church { background: #0B1E3F; color: #F8F4EC; }
+  .church .logo { position: absolute; left: 90px; top: 50%; width: 330px; height: 330px; transform: translateY(-50%); border-radius: 50%; object-fit: cover; border: 3px solid #C9A227; box-shadow: 0 30px 70px rgba(0,0,0,.5); }
+  .church .right { position: absolute; left: 490px; right: 60px; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: center; }
+  .church .eyebrow { display: flex; align-items: center; gap: 14px; font-size: 18px; font-weight: 700; letter-spacing: .26em; text-transform: uppercase; color: #C9A227; }
+  .church .eyebrow::before { content: ""; width: 44px; height: 2px; background: #C9A227; }
+  .church h1 { font-family: Anton, sans-serif; font-weight: 400; text-transform: uppercase; font-size: 104px; line-height: .98; margin-top: 18px; }
+  .church h1 span { color: #C9A227; }
+  .church p { font-size: 24px; font-weight: 500; line-height: 1.4; margin-top: 22px; color: rgba(248,244,236,.85); }
+  .church .url { color: #C9A227; }
+</style>
+</head>
+<body>
+  <!--
+    Source des images de partage de public/og/ (1200 x 630).
+    Ouvrir ce fichier dans Chrome avec ?v=peniel, ?v=lancement ou ?v=eglise,
+    fenêtre à 1200 x 630, puis capturer en JPEG.
+    Après une nouvelle image, changer son nom de fichier : WhatsApp et Facebook gardent l'ancienne en cache.
+  -->
+  <div id="peniel" class="card peniel" hidden>
+    <img class="poster" src="../../public/peniel/peniel-2026-affiche-principale.jpg" alt="">
+    <div class="right">
+      <p class="eyebrow">Temple des Vainqueurs présente</p>
+      <span id="launch" class="tag launch" hidden>Lancement samedi 31 octobre</span>
+      <div class="theme">
+        <span class="tag t-tag">Thème</span>
+        <span class="script s1">Marche</span>
+        <span class="script s2">Intègre</span>
+        <div class="lines">
+          <div class="row row1">
+            <span class="big fire">Marche</span>
+            <span class="small"><span>Devant</span><span>ma face</span></span>
+          </div>
+          <div class="row row2">
+            <span class="small"><span>Et sois</span><span class="tag">Genèse 17v1</span></span>
+            <span class="big fire">Intègre</span>
+          </div>
+        </div>
+      </div>
+      <div class="dates">
+        <p style="display:flex;align-items:center"><span class="four fire">4</span><span class="weeks"><span>Semaines</span><span>de jeûne et de prière</span></span></p>
+        <span class="sep"></span>
+        <p style="display:flex;flex-direction:column;align-items:flex-start"><span class="num"><span class="n fire">01</span><span class="au">au</span><span class="n fire">29</span></span><span class="tag nov">Novembre 2026</span></p>
+      </div>
+    </div>
+    <p class="url">www.advainqueurs.org</p>
+  </div>
+
+  <div id="eglise" class="card church" hidden>
+    <img class="logo" src="../../public/logo.png" alt="">
+    <div class="right">
+      <p class="eyebrow">Assemblées de Dieu · Abidjan</p>
+      <h1>Temple des<br><span>Vainqueurs</span></h1>
+      <p>Vridi, Port-Bouët — cultes, prédications<br>et vie d'église chaque semaine.</p>
+    </div>
+    <p class="url">www.advainqueurs.org</p>
+  </div>
+
+  <script>
+    const v = new URLSearchParams(location.search).get("v") || "peniel";
+    document.getElementById(v === "eglise" ? "eglise" : "peniel").hidden = false;
+    if (v === "lancement") document.getElementById("launch").hidden = false;
+  </script>
+</body>
+</html>

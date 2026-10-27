@@ -21,18 +21,23 @@ import {
   getTestimonials,
   getPageContent,
 } from "@/lib/sanity/queries";
-import { penielPhase } from "@/lib/peniel";
+import { isPenielSeason, penielPhase } from "@/lib/peniel";
+import { buildMetadata, penielShare, siteConfig } from "@/lib/site";
 import { getSettings } from "@/lib/sanity/settings";
 import { getLatestSermons } from "@/lib/youtube";
 import type { Metadata } from "next";
 
+// Pendant PENIEL, le lien du site se partage avec l'aperçu PENIEL ; le reste de l'année, celui de l'église.
 export async function generateMetadata(): Promise<Metadata> {
   const seo = (await getPageContent("home").catch(() => null))?.seo;
-  return {
+  const peniel = isPenielSeason();
+  return buildMetadata({
     ...(seo?.title && { title: { absolute: seo.title } }),
-    ...(seo?.description && { description: seo.description }),
-    ...(seo?.ogImage && { openGraph: { images: [{ url: seo.ogImage }] } }),
-  };
+    description: seo?.description || siteConfig.description,
+    path: "/",
+    ...(peniel && { share: penielShare() }),
+    ...(!peniel && seo?.ogImage && { image: { url: seo.ogImage } }),
+  });
 }
 
 export default async function HomePage() {

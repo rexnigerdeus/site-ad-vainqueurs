@@ -4,6 +4,7 @@ import { ArrowLeft, Play } from "lucide-react";
 import { Reveal } from "@/components/motion/Reveal";
 import { getSermons, getSermonBySlug, type Sermon } from "@/lib/sanity/queries";
 import { formatDateFr } from "@/lib/utils";
+import { buildMetadata } from "@/lib/site";
 import { getLatestSermons, getYoutubeSermon, YT_SLUG_PREFIX } from "@/lib/youtube";
 import { notFound } from "next/navigation";
 import { PortableText } from "@portabletext/react";
@@ -32,18 +33,30 @@ async function loadSermon(slug: string): Promise<Sermon | null> {
   return video;
 }
 
+function clip(text: string, max = 160) {
+  const flat = text.replace(/\s+/g, " ");
+  return flat.length <= max ? flat : `${flat.slice(0, max - 1).replace(/\s+\S*$/, "")}…`;
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const sermon = await loadSermon(slug);
   if (!sermon) return { title: "Prédication introuvable" };
   const image =
     sermon.thumbnail || (sermon.youtubeId && `https://img.youtube.com/vi/${sermon.youtubeId}/hqdefault.jpg`);
-  return {
+  return buildMetadata({
     title: sermon.title,
-    description:
-      sermon.excerpt || [sermon.preacher, sermon.theme].filter(Boolean).join(" — ") || sermon.title,
-    ...(image && { openGraph: { images: [{ url: image }] } }),
-  };
+    // La description YouTube est souvent vide ou très longue : on la coupe à ~160 caractères pour Google.
+    description: clip(
+      sermon.excerpt?.trim() ||
+        [sermon.preacher, sermon.theme].filter(Boolean).join(" — ") ||
+        `Message du ${formatDateFr(sermon.date)} au Temple des Vainqueurs, en vidéo.`
+    ),
+    path: `/messages/${slug}`,
+    type: "article",
+    // Miniature YouTube : 480 x 360, pas le format 1200 x 630 par défaut
+    ...(image && { image: { url: image, width: 480, height: 360 } }),
+  });
 }
 
 export default async function SermonDetailPage({ params }: Props) {
