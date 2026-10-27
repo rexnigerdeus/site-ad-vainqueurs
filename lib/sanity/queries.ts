@@ -18,16 +18,6 @@ export async function getUpcomingEvents(limit = 6) {
   );
 }
 
-export async function getPenielEvent() {
-  return sanityClient.fetch<Event | null>(
-    `*[_type == "event" && category == "special" && title match "PENIEL*"] | order(date asc) [0] {
-      _id, title, slug, date, time, location, category, description
-    }`,
-    {},
-    { next: { revalidate: 3600 } }
-  );
-}
-
 export async function getFeaturedEvents(limit = 4) {
   return sanityClient.fetch<Event[]>(
     `*[_type == "event" && featured == true] | order(date asc) [0...$limit] {

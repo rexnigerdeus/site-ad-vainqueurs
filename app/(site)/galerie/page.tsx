@@ -51,7 +51,7 @@ export default async function GaleriePage() {
                     <span className="inline-flex items-center gap-1 text-xs font-medium text-gold">
                       <Images className="h-3.5 w-3.5" /> {album.count} médias
                     </span>
-                    <h3 className="mt-1 font-display text-xl leading-tight tracking-tight-48">
+                    <h3 className="mt-1 font-display text-xl leading-tight">
                       {album.title}
                     </h3>
                     <p className="mt-1 text-xs text-ivory/60">

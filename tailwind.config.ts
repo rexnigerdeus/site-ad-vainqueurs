@@ -67,6 +67,17 @@ const config: Config = {
           600: "#631A24",
           700: "#4D141C",
         },
+        // Charte PENIEL 2026 (affiches public/peniel/)
+        peniel: {
+          ink: "#120F4D",
+          deep: "#1C1873",
+          indigo: "#2B2896",
+          royal: "#3A35B5",
+          cyan: "#22A8E6",
+          orange: "#F15A24",
+          amber: "#FBB03B",
+          red: "#E1262D",
+        },
         border: "rgba(255,255,255,0.08)",
         muted: {
           DEFAULT: "#E8DEC5",
@@ -76,14 +87,11 @@ const config: Config = {
       fontFamily: {
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],
         display: ["var(--font-display)", "Impact", "Arial Narrow Bold", "sans-serif"],
+        condensed: ["var(--font-condensed)", "var(--font-display)", "Impact", "sans-serif"],
+        script: ["var(--font-script)", "cursive"],
       },
       borderRadius: {
         "6": "1.5rem",
-      },
-      letterSpacing: {
-        "tight-48": "-0.048em",
-        "tight-56": "-0.056em",
-        "tight-112": "-0.112em",
       },
       screens: {
         "2.5xl": "1440px",
@@ -121,6 +129,9 @@ const config: Config = {
       backgroundImage: {
         "gold-gradient": "linear-gradient(135deg, #C9A227 0%, #E6C752 50%, #C9A227 100%)",
         "night-gradient": "linear-gradient(180deg, #0B1E3F 0%, #091830 100%)",
+        "peniel-fire": "linear-gradient(100deg, #E8411F 0%, #F15A24 30%, #F7941D 65%, #FBB03B 100%)",
+        "peniel-sky":
+          "radial-gradient(60% 50% at 100% 0%, rgba(34,168,230,0.55) 0%, transparent 70%), radial-gradient(50% 45% at 0% 100%, rgba(34,168,230,0.4) 0%, transparent 70%), linear-gradient(160deg, #3A35B5 0%, #2B2896 45%, #1C1873 100%)",
       },
     },
   },

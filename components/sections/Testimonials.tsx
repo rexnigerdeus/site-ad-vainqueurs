@@ -1,5 +1,6 @@
 import { Quote } from "lucide-react";
 import { Reveal } from "@/components/motion/Reveal";
+import { SplitReveal } from "@/components/motion/SplitReveal";
 import type { Testimonial as TestimonialType } from "@/lib/sanity/queries";
 
 const FALLBACK: TestimonialType[] = [
@@ -28,24 +29,23 @@ export function Testimonials({ testimonials }: { testimonials?: TestimonialType[
   return (
     <section className="bg-ivory py-20 text-night lg:py-28">
       <div className="container-section">
-        <Reveal className="mb-12 text-center">
-          <p className="mb-3 text-sm font-semibold uppercase tracking-wider text-gold-600">
-            Témoignages
-          </p>
-          <h2 className="font-display text-3xl tracking-tight-48 md:text-5xl">
+        <div className="mb-12 text-center">
+          <p className="eyebrow mb-4 justify-center text-gold-600">Témoignages</p>
+          <SplitReveal className="font-display text-4xl uppercase leading-[0.95] md:text-6xl">
             Ce que disent nos fidèles
-          </h2>
-        </Reveal>
+          </SplitReveal>
+        </div>
 
-        <div className="grid gap-6 md:grid-cols-3">
+        {/* Carrousel tactile sur téléphone, 3 colonnes au-delà */}
+        <div className="snap-carousel -mx-4 px-4 md:mx-0 md:grid md:grid-cols-3 md:gap-6 md:overflow-visible md:px-0">
           {data.map((t, i) => (
             <Reveal
               key={t.author}
               delay={i * 0.1}
-              className="rounded-6 border border-night/10 bg-white p-8 shadow-sm"
+              className="flex w-[82vw] max-w-sm flex-col rounded-3xl border border-night/10 bg-white p-7 shadow-sm transition-shadow hover:shadow-xl sm:p-8 md:w-auto md:max-w-none"
             >
               <Quote className="h-8 w-8 text-gold" />
-              <p className="mt-4 font-display text-lg leading-relaxed text-night">
+              <p className="mt-4 flex-1 font-sans text-lg italic leading-relaxed text-night">
                 « {t.text} »
               </p>
               <div className="mt-6 border-t border-night/5 pt-4">

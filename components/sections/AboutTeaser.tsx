@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowRight, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Reveal, StaggerGroup, StaggerItem } from "@/components/motion/Reveal";
+import { SplitReveal } from "@/components/motion/SplitReveal";
 import { valueIcons } from "@/lib/icons";
 
 type Value = { icon: string; title: string; text: string };
@@ -29,13 +30,12 @@ export function AboutTeaser({
   return (
     <section className="bg-night py-20 lg:py-28">
       <div className="container-section grid gap-12 lg:grid-cols-2 lg:items-center">
-        <Reveal>
-          <p className="mb-3 text-sm font-semibold uppercase tracking-wider text-gold">
-            À propos de nous
-          </p>
-          <h2 className="font-display text-3xl leading-tight tracking-tight-48 md:text-5xl">
-            {heroTitle || (<>Une église née de la foi,<br />ancrée dans la communauté</>)}
-          </h2>
+        <div>
+          <p className="eyebrow mb-5 text-gold">À propos de nous</p>
+          <SplitReveal className="font-display text-4xl uppercase leading-[0.95] md:text-6xl">
+            {heroTitle || "Une église née de la foi, ancrée dans la communauté"}
+          </SplitReveal>
+          <Reveal>
           <p className="mt-6 text-lg text-ivory/70">
             {heroDescription ||
               "Le Temple des Vainqueurs est une assemblée évangélique des Assemblées de Dieu, implantée à Abidjan, Port-Bouët (Vridi). Notre mission : annoncer l'Évangile, former des disciples et servir notre communauté dans l'amour du Christ."}
@@ -48,7 +48,8 @@ export function AboutTeaser({
               Découvrir notre histoire <ArrowRight className="h-4 w-4" />
             </Link>
           </Button>
-        </Reveal>
+          </Reveal>
+        </div>
 
         <StaggerGroup className="grid gap-4 sm:grid-cols-2">
           {vals.map((v) => {
@@ -56,10 +57,13 @@ export function AboutTeaser({
             return (
             <StaggerItem
               key={v.title}
-              className="glass-card rounded-6 p-6 transition-transform hover:-translate-y-1"
+              className="glass-card group relative overflow-hidden rounded-3xl p-6 transition-all duration-300 hover:-translate-y-1 hover:border-gold/40"
             >
-              <Icon className="h-8 w-8 text-gold" />
-              <h3 className="mt-4 font-display text-xl tracking-tight-48">{v.title}</h3>
+              <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-gold/0 blur-2xl transition-colors duration-500 group-hover:bg-gold/25" />
+              <span className="grid h-12 w-12 place-items-center rounded-2xl bg-gold/10 ring-1 ring-gold/30 transition-transform duration-500 group-hover:rotate-6 group-hover:scale-110">
+                <Icon className="h-6 w-6 text-gold" />
+              </span>
+              <h3 className="mt-5 font-display text-2xl uppercase">{v.title}</h3>
               <p className="mt-2 text-sm text-ivory/70">{v.text}</p>
             </StaggerItem>
             );

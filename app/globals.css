@@ -3,9 +3,32 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
-    --font-sans: "Poppins", system-ui, sans-serif;
-    --font-display: Impact, "Haettenschweiler", "Arial Narrow Bold", sans-serif;
+  /* Titres révélés par GSAP (SplitReveal) : masqués jusqu'à la découpe,
+     avec un filet de sécurité qui les réaffiche si le script ne tourne pas. */
+  .js [data-split]:not([data-split="ready"]) {
+    visibility: hidden;
+    animation: split-failsafe 0s 2.5s forwards;
+  }
+
+  /* Masques de ligne de SplitText : un peu de marge pour ne pas couper les accents (É, È…) */
+  [data-split="ready"] > div {
+    padding-block: 0.16em 0.06em;
+    margin-block: -0.16em -0.06em;
+  }
+
+  @keyframes split-failsafe {
+    to {
+      visibility: visible;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .js [data-split] {
+      visibility: visible;
+    }
+    html {
+      scroll-behavior: auto !important;
+    }
   }
 
   * {
@@ -25,7 +48,7 @@
   }
 
   h1, h2, h3, h4 {
-    @apply font-display tracking-tight-48;
+    @apply font-display;
   }
 
   /* Accessibilité : focus visible partout */
@@ -93,6 +116,61 @@
     }
     to {
       transform: translateX(-50%);
+    }
+  }
+}
+
+@layer components {
+  /* Petit sur-titre de section, avec un trait */
+  .eyebrow {
+    @apply inline-flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.2em] sm:text-sm;
+  }
+
+  .eyebrow::before {
+    content: "";
+    @apply h-px w-8 bg-current opacity-70;
+  }
+
+  /* Grain léger sur les fonds sombres, pour éviter l'aspect « plat » */
+  .grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.07;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* Halos qui dérivent lentement */
+  .orb {
+    @apply pointer-events-none absolute rounded-full blur-[100px];
+    animation: orb-drift 18s ease-in-out infinite alternate;
+  }
+
+  @keyframes orb-drift {
+    from {
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+    to {
+      transform: translate3d(8%, 12%, 0) scale(1.15);
+    }
+  }
+
+  /* Texte en dégradé « feu » de PENIEL */
+  .text-fire {
+    @apply bg-peniel-fire bg-clip-text text-transparent;
+  }
+
+  /* Étiquette rouge inclinée des affiches PENIEL */
+  .peniel-tag {
+    @apply inline-block -skew-x-6 rounded-sm bg-peniel-red px-2.5 py-0.5 font-sans font-extrabold uppercase text-white shadow-lg shadow-black/20;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .orb,
+    .auto-scroll {
+      animation: none;
     }
   }
 }

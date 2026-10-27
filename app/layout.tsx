@@ -1,16 +1,41 @@
 import type { Metadata, Viewport } from "next";
-import { Poppins } from "next/font/google";
+import { Anton, Bebas_Neue, Great_Vibes, Poppins } from "next/font/google";
 import "./globals.css";
 import { siteConfig, jsonLdOrganization } from "@/lib/site";
+import { ScrollProgress } from "@/components/motion/ScrollProgress";
 
 /**
- * Police corps : Poppins (Google Fonts).
- * Police titres : Impact (police système, non disponible sur Google Fonts).
+ * Police corps : Poppins.
+ * Police titres : Anton — même allure qu'Impact, mais chargée partout
+ * (Impact n'existe ni sur Android ni sur iOS, où les titres retombaient en police générique).
+ * Charte PENIEL : Bebas Neue (titres condensés) et Great Vibes (manuscrite).
  */
 const poppins = Poppins({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
+  style: ["normal", "italic"],
   variable: "--font-sans",
+  display: "swap",
+});
+
+const anton = Anton({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-display",
+  display: "swap",
+});
+
+const bebas = Bebas_Neue({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-condensed",
+  display: "swap",
+});
+
+const greatVibes = Great_Vibes({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-script",
   display: "swap",
 });
 
@@ -67,12 +92,18 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="fr" className={poppins.variable} suppressHydrationWarning>
-      <body className="min-h-screen bg-night text-ivory">
+    <html
+      lang="fr"
+      className={`${poppins.variable} ${anton.variable} ${bebas.variable} ${greatVibes.variable}`}
+      suppressHydrationWarning
+    >
+      <body className="min-h-screen overflow-x-clip bg-night text-ivory">
+        <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdOrganization) }}
         />
+        <ScrollProgress />
         {children}
       </body>
     </html>

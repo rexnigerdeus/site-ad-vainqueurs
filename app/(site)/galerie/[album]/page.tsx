@@ -36,7 +36,7 @@ export default async function AlbumPage({ params }: Props) {
             >
               <ArrowLeft className="h-4 w-4" /> Retour aux activités
             </Link>
-            <h1 className="mt-6 font-display text-3xl leading-tight tracking-tight-48 md:text-5xl">
+            <h1 className="mt-6 font-display text-3xl leading-tight md:text-5xl">
               {album.title}
             </h1>
             <p className="mt-3 text-ivory/70">{formatDateFr(album.date)} · {album.count || album.photos?.length || 0} médias</p>

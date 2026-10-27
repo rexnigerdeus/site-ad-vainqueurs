@@ -1,102 +1,119 @@
 "use client";
 
 import * as React from "react";
-import { Reveal } from "@/components/motion/Reveal";
 import Image from "next/image";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+import { PENIEL } from "@/lib/peniel";
+import { cn } from "@/lib/utils";
 
 /**
- * Section "Événement spécial" — PENIEL 2026.
- * Visuel « Coming soon » en fond (public/peniel-coming-soon.jpg), sans texte HTML visible :
- * le compteur est posé sous « COMING SOON » (grand écran) ou sous le visuel (mobile/tablette).
- * Compte à rebours avant le 1er novembre 2026.
- * La date cible peut être passée en props depuis un événement Sanity.
+ * Compte à rebours jusqu'au lancement de PENIEL (samedi 31 octobre).
+ * Il se retire de lui-même à l'heure du lancement, même sur une page déjà ouverte ;
+ * les pages serveur ne l'affichent plus non plus une fois la date passée.
+ *  - "banner"  : bandeau aux couleurs PENIEL, sous la couverture de l'accueil ;
+ *  - "compact" : « coming soon » réduit, en tête de la page PENIEL.
  */
 
-const DEFAULT_DATE = new Date("2026-11-01T00:00:00+00:00");
+const LAUNCH = Date.parse(PENIEL.launch);
 
-function getTimeLeft(target: Date) {
-  const total = Math.max(0, target.getTime() - Date.now());
-  const days = Math.floor(total / (1000 * 60 * 60 * 24));
-  const hours = Math.floor((total / (1000 * 60 * 60)) % 24);
-  const minutes = Math.floor((total / (1000 * 60)) % 60);
-  const seconds = Math.floor((total / 1000) % 60);
-  return { total, days, hours, minutes, seconds };
+function timeLeft() {
+  const total = Math.max(0, LAUNCH - Date.now());
+  return {
+    total,
+    days: Math.floor(total / 86_400_000),
+    hours: Math.floor((total / 3_600_000) % 24),
+    minutes: Math.floor((total / 60_000) % 60),
+    seconds: Math.floor((total / 1000) % 60),
+  };
 }
 
-function Unit({ value, label }: { value: number; label: string }) {
+function useCountdown() {
+  const [state, setState] = React.useState<ReturnType<typeof timeLeft> | null>(null);
+  React.useEffect(() => {
+    setState(timeLeft());
+    const id = setInterval(() => setState(timeLeft()), 1000);
+    return () => clearInterval(id);
+  }, []);
+  return state;
+}
+
+function Digits({ value, label, size }: { value?: number; label: string; size: "lg" | "sm" }) {
   return (
-    <div className="flex h-16 w-16 flex-col items-center justify-center rounded-6 bg-night shadow-lg shadow-night/30 md:h-20 md:w-20 xl:h-24 xl:w-24">
-      <span className="font-display text-2xl tabular-nums leading-none text-gold md:text-3xl xl:text-4xl">
-        {String(value).padStart(2, "0")}
+    <div
+      className={cn(
+        "flex flex-col items-center justify-center rounded-2xl border border-white/15 bg-peniel-ink/60 backdrop-blur",
+        size === "lg" ? "h-[4.25rem] w-[4.25rem] sm:h-20 sm:w-20 lg:h-24 lg:w-24" : "h-14 w-14 sm:h-16 sm:w-16"
+      )}
+    >
+      <span
+        className={cn(
+          "font-condensed tabular-nums leading-none text-peniel-amber",
+          size === "lg" ? "text-[2.1rem] sm:text-4xl lg:text-5xl" : "text-[1.7rem] sm:text-3xl"
+        )}
+      >
+        {value === undefined ? "--" : String(value).padStart(2, "0")}
       </span>
-      <span className="mt-1 text-[10px] font-semibold uppercase tracking-wider text-ivory md:text-xs">
-        {label}
-      </span>
+      <span className="mt-1 text-[10px] font-semibold uppercase tracking-wider text-white/80">{label}</span>
     </div>
   );
 }
 
-function Separator() {
+function Timer({ t, size }: { t: ReturnType<typeof timeLeft> | null; size: "lg" | "sm" }) {
   return (
-    <span aria-hidden="true" className="font-display text-2xl text-night md:text-3xl xl:text-4xl">
-      :
-    </span>
+    <div
+      role="timer"
+      aria-label={t ? `Lancement dans ${t.days} jours, ${t.hours} heures et ${t.minutes} minutes` : "Compte à rebours"}
+      className="flex items-center gap-1.5 sm:gap-2.5"
+    >
+      <Digits value={t?.days} label="Jours" size={size} />
+      <Digits value={t?.hours} label="Heures" size={size} />
+      <Digits value={t?.minutes} label="Min" size={size} />
+      <Digits value={t?.seconds} label="Sec" size={size} />
+    </div>
   );
 }
 
-export function PenielCountdown({ targetDate }: { targetDate?: string }) {
-  const PENIEL_DATE = targetDate ? new Date(targetDate) : DEFAULT_DATE;
-  const [timeLeft, setTimeLeft] = React.useState(() => getTimeLeft(PENIEL_DATE));
-  const [mounted, setMounted] = React.useState(false);
+export function PenielCountdown({ variant = "banner" }: { variant?: "banner" | "compact" }) {
+  const t = useCountdown();
+  // Tout le bloc se retire à l'heure du lancement.
+  if (t && t.total === 0) return null;
 
-  React.useEffect(() => {
-    setMounted(true);
-    const id = setInterval(() => setTimeLeft(getTimeLeft(PENIEL_DATE)), 1000);
-    return () => clearInterval(id);
-  }, [PENIEL_DATE]);
-
-  const t = mounted ? timeLeft : { days: 0, hours: 0, minutes: 0, seconds: 0 };
+  if (variant === "compact") {
+    return (
+      <section aria-labelledby="peniel-soon" className="relative z-10 -mt-10 px-4 sm:-mt-14">
+        <div className="mx-auto grid max-w-4xl grid-cols-[96px_1fr] items-center gap-x-4 gap-y-4 overflow-hidden rounded-3xl border border-white/15 bg-peniel-deep/90 p-4 shadow-2xl shadow-peniel-ink/50 backdrop-blur-xl sm:grid-cols-[200px_1fr] sm:p-5">
+          <div className="relative aspect-[2/1] overflow-hidden rounded-xl sm:row-span-2 sm:rounded-2xl">
+            <Image src="/peniel-coming-soon.jpg" alt="" fill sizes="(min-width: 640px) 200px, 96px" className="object-cover" />
+          </div>
+          <h2 id="peniel-soon" className="font-condensed text-xl leading-none tracking-wide text-white sm:self-end sm:text-3xl">
+            Coming soon · <span className="text-peniel-amber">lancement samedi 31 octobre</span>
+          </h2>
+          <div className="col-span-2 flex justify-center sm:col-span-1 sm:col-start-2 sm:justify-start sm:self-start">
+            <Timer t={t} size="sm" />
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
-    <section aria-labelledby="peniel-title" className="relative overflow-hidden bg-[#F3F1FF]">
-      {/* Le visuel porte tout le texte : on le redonne aux lecteurs d'écran. */}
-      <h2 id="peniel-title" className="sr-only">
-        PENIEL 2026 — Bientôt : mois de jeûne et de prière, novembre 2026
-      </h2>
-
-      {/* Visuel au ratio 2:1 ; sur grand écran le compteur se pose dessus, sous « COMING SOON ». */}
-      <div className="relative aspect-[2/1] w-full">
-        <Image
-          src="/peniel-coming-soon.jpg"
-          alt=""
-          fill
-          sizes="100vw"
-          className="object-cover"
-        />
-      </div>
-
-      <div className="py-6 lg:absolute lg:inset-x-0 lg:top-[55%] lg:py-0">
-        <Reveal delay={0.15}>
-          {timeLeft.total === 0 ? (
-            <p className="mx-auto w-fit rounded-6 bg-night px-6 py-3 text-center font-display text-2xl text-gold md:text-3xl">
-              C&apos;est l&apos;heure du combat spirituel ! 🙏
-            </p>
-          ) : (
-            <div
-              role="timer"
-              aria-label={`Début dans ${t.days} jours, ${t.hours} heures et ${t.minutes} minutes`}
-              className="flex items-center justify-center gap-2 md:gap-3"
-            >
-              <Unit value={t.days} label="Jours" />
-              <Separator />
-              <Unit value={t.hours} label="Heures" />
-              <Separator />
-              <Unit value={t.minutes} label="Min" />
-              <Separator />
-              <Unit value={t.seconds} label="Sec" />
-            </div>
-          )}
-        </Reveal>
+    <section aria-labelledby="peniel-countdown" className="relative overflow-hidden bg-peniel-sky text-white">
+      <div className="orb -left-20 top-0 h-56 w-56 bg-peniel-orange/30" />
+      <div className="container-section relative flex flex-col items-center gap-5 py-7 text-center lg:flex-row lg:justify-between lg:py-8 lg:text-left">
+        <div>
+          <p className="font-sans text-xs font-bold uppercase tracking-[0.3em] text-peniel-amber">Coming soon</p>
+          <h2 id="peniel-countdown" className="mt-1 font-condensed text-3xl leading-none tracking-wide sm:text-4xl lg:text-5xl">
+            Lancement de PENIEL <span className="text-fire">samedi 31 octobre</span>
+          </h2>
+        </div>
+        <Timer t={t} size="lg" />
+        <Link
+          href="/peniel"
+          className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full bg-white px-5 py-2.5 text-sm font-bold text-peniel-deep transition-transform hover:scale-105 active:scale-95"
+        >
+          Le programme <ArrowRight className="h-4 w-4" />
+        </Link>
       </div>
     </section>
   );

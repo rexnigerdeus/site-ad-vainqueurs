@@ -47,7 +47,7 @@ export default async function AboutPage() {
             <p className="mb-3 text-sm font-semibold uppercase tracking-wider text-gold-600">
               Notre histoire
             </p>
-            <h2 className="font-display text-3xl tracking-tight-48 md:text-4xl">
+            <h2 className="font-display text-3xl md:text-4xl">
               {pageContent?.heroTitle || "Née de la foi, grandie dans la communion"}
             </h2>
             <div className="mt-6 space-y-4 text-lg text-night/70">
@@ -91,7 +91,7 @@ export default async function AboutPage() {
       <section className="bg-night py-20 lg:py-28">
         <div className="container-section">
           <Reveal className="mb-12 text-center">
-            <h2 className="font-display text-3xl tracking-tight-48 md:text-5xl">
+            <h2 className="font-display text-3xl md:text-5xl">
               Ce qui nous porte
             </h2>
           </Reveal>
@@ -101,7 +101,7 @@ export default async function AboutPage() {
             return (
             <StaggerItem key={p.title} className="glass-card rounded-6 p-6">
               <Icon className="h-8 w-8 text-gold" />
-                <h3 className="mt-4 font-display text-xl tracking-tight-48">{p.title}</h3>
+                <h3 className="mt-4 font-display text-xl">{p.title}</h3>
                 <p className="mt-2 text-sm text-ivory/70">{p.text}</p>
               </StaggerItem>
             );
@@ -117,7 +117,7 @@ export default async function AboutPage() {
             <p className="mb-3 text-sm font-semibold uppercase tracking-wider text-gold-600">
               Équipe pastorale
             </p>
-            <h2 className="font-display text-3xl tracking-tight-48 md:text-5xl">
+            <h2 className="font-display text-3xl md:text-5xl">
               Les bergers de l'assemblée
             </h2>
           </Reveal>
@@ -147,7 +147,7 @@ export default async function AboutPage() {
                     </div>
                   )}
                   <div>
-                    <h3 className="font-display text-xl tracking-tight-48">{m.name}</h3>
+                    <h3 className="font-display text-xl">{m.name}</h3>
                     <p className="text-sm font-semibold text-gold-600">{m.role}</p>
                     <p className="mt-2 text-sm text-night/70">{m.bio}</p>
                   </div>

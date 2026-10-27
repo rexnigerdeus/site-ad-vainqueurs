@@ -71,7 +71,7 @@ export default async function SermonDetailPage({ params }: Props) {
             <span className="mt-6 block text-xs font-semibold uppercase tracking-wider text-gold">
               {[sermon.theme, sermon.type].filter(Boolean).join(" · ")}
             </span>
-            <h1 className="mt-2 font-display text-3xl leading-tight tracking-tight-48 md:text-5xl">
+            <h1 className="mt-2 font-display text-3xl leading-tight md:text-5xl">
               {sermon.title}
             </h1>
             <p className="mt-4 text-ivory/70">
@@ -128,7 +128,7 @@ export default async function SermonDetailPage({ params }: Props) {
       {/* Related */}
       <section className="pb-20 lg:pb-28">
         <div className="container-section max-w-4xl">
-          <h2 className="mb-6 font-display text-2xl tracking-tight-48">
+          <h2 className="mb-6 font-display text-2xl">
             Continuer à écouter
           </h2>
           <div className="grid gap-4 sm:grid-cols-3">
@@ -139,7 +139,7 @@ export default async function SermonDetailPage({ params }: Props) {
                 className="group rounded-6 border border-night/10 bg-white p-4 transition-all hover:shadow-lg"
               >
                 <Play className="h-6 w-6 text-gold-600" />
-                <h3 className="mt-3 font-display text-base leading-snug tracking-tight-48">
+                <h3 className="mt-3 font-display text-base leading-snug">
                   {r.title}
                 </h3>
                 <p className="mt-1 text-xs text-night/60">{formatDateFr(r.date)}</p>

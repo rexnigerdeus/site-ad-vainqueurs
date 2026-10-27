@@ -31,7 +31,7 @@ export default async function DonsPage() {
           <Reveal>
             <div className="rounded-6 border border-gold/20 bg-gold/5 p-8 text-center">
               <Heart className="mx-auto h-12 w-12 text-gold" />
-              <p className="mt-4 font-display text-2xl tracking-tight-48 text-ivory">
+              <p className="mt-4 font-display text-2xl text-ivory">
                 « {content?.quote?.text || "Que chacun donne comme il l'a résolu en son cœur, sans tristesse ni contrainte ; car Dieu aime celui qui donne avec joie."} »
               </p>
               <p className="mt-3 text-sm text-ivory/60">{content?.quote?.reference || "2 Corinthiens 9:7"}</p>
@@ -39,19 +39,19 @@ export default async function DonsPage() {
           </Reveal>
 
           <Reveal delay={0.1}>
-            <h2 className="font-display text-2xl tracking-tight-48">Par Mobile Money</h2>
+            <h2 className="font-display text-2xl">Par Mobile Money</h2>
             <div className="mt-6 grid gap-4 sm:grid-cols-2">
               <div className="rounded-6 border border-white/10 bg-white/5 p-6">
                 <Smartphone className="h-8 w-8 text-gold" />
                 <h3 className="mt-4 font-display text-xl">Wave</h3>
-                <p className="mt-2 text-2xl font-semibold tracking-tight-48 text-gold">
+                <p className="mt-2 text-2xl font-semibold text-gold">
                   {s.donations.wave}
                 </p>
               </div>
               <div className="rounded-6 border border-white/10 bg-white/5 p-6">
                 <Smartphone className="h-8 w-8 text-gold" />
                 <h3 className="mt-4 font-display text-xl">Orange Money</h3>
-                <p className="mt-2 text-2xl font-semibold tracking-tight-48 text-gold">
+                <p className="mt-2 text-2xl font-semibold text-gold">
                   {s.donations.orangeMoney}
                 </p>
               </div>
