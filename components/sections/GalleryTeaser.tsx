@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { ArrowRight, Images } from "lucide-react";
 import { Reveal, StaggerGroup, StaggerItem } from "@/components/motion/Reveal";
+import { SplitReveal } from "@/components/motion/SplitReveal";
 import type { Album } from "@/lib/sanity/queries";
 import { formatDateFr } from "@/lib/utils";
 
@@ -16,9 +17,9 @@ export function GalleryTeaser({ albums }: { albums: Album[] }) {
             <p className="mb-3 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-gold">
               <Images className="h-4 w-4" /> Galerie
             </p>
-            <h2 className="font-display text-3xl tracking-tight-48 md:text-5xl">
+            <SplitReveal className="font-display text-4xl uppercase leading-[0.95] md:text-6xl">
               Moments de vie
-            </h2>
+            </SplitReveal>
           </div>
           <Link
             href="/activites"
@@ -49,7 +50,7 @@ export function GalleryTeaser({ albums }: { albums: Album[] }) {
                   <span className="text-xs font-medium text-gold">
                     {album.count} photos
                   </span>
-                  <h3 className="mt-1 font-display text-xl leading-tight tracking-tight-48 text-ivory">
+                  <h3 className="mt-1 font-display text-xl leading-tight text-ivory">
                     {album.title}
                   </h3>
                   <p className="mt-1 text-xs text-ivory/60">

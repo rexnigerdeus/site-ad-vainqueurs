@@ -28,6 +28,20 @@ export const CHURCH = {
   },
 } as const;
 
+/**
+ * Rendez-vous réguliers de l'église (hors PENIEL).
+ * Pendant PENIEL, c'est le programme de lib/peniel.ts qui s'affiche à la place.
+ */
+export const REGULAR_PROGRAM = [
+  { _id: "w1", day: "Dimanche", time: "07h00 – 10h00", title: "Culte dominical", description: "Louange, adoration et prédication." },
+  { _id: "w2", day: "Dimanche", time: "À partir de 15h00", title: "Rencontre des jeunes", description: "Rassemblement des jeunes de l'église." },
+  { _id: "w3", day: "Premier dimanche du mois", time: "À partir de 07h00", title: "Jeûne et prière", description: "Toute l'assemblée se consacre au jeûne et à la prière." },
+  { _id: "w4", day: "Dernier vendredi du mois", time: "21h00", title: "Veillée", description: "Nuit de prière de l'assemblée." },
+];
+
+export const REGULAR_SERVICE_HOURS =
+  "Culte : dimanche 07h00 – 10h00 · Jeunes : dimanche dès 15h00 · Jeûne et prière : 1er dimanche du mois dès 07h00 · Veillée : dernier vendredi du mois à 21h00";
+
 /** Navigation principale (mapping CDC §5) */
 export const NAV_LINKS = [
   { href: "/", label: "Accueil" },

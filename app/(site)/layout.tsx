@@ -4,6 +4,8 @@ import { WhatsAppFab } from "@/components/layout/WhatsAppFab";
 import { Chatbot } from "@/components/layout/Chatbot";
 import { getSettings } from "@/lib/sanity/settings";
 import { NAV_LINKS } from "@/lib/church";
+import { isPenielSeason } from "@/lib/peniel";
+import { MotionRuntime } from "@/components/motion/MotionRuntime";
 
 /**
  * Layout des pages publiques du site.
@@ -21,9 +23,10 @@ export default async function SiteLayout({
 
   return (
     <>
-      <Header settings={settings} navLinks={navLinks} />
+      <Header settings={settings} navLinks={navLinks} penielSeason={isPenielSeason()} />
       <main className="pt-16 md:pt-20">{children}</main>
       <Footer settings={settings} navLinks={navLinks} />
+      <MotionRuntime />
       <WhatsAppFab whatsapp={settings.whatsapp} />
       <Chatbot />
     </>

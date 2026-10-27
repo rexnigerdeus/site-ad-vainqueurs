@@ -1,4 +1,5 @@
 import { Reveal } from "@/components/motion/Reveal";
+import { SplitReveal } from "@/components/motion/SplitReveal";
 
 type Props = {
   eyebrow?: string;
@@ -6,25 +7,36 @@ type Props = {
   description?: string;
 };
 
-/** En-tête de page interne — bandeau night avec halo doré. */
+/** En-tête de page interne — grand titre révélé mot à mot, halos qui dérivent. */
 export function PageHeader({ eyebrow, title, description }: Props) {
   return (
-    <section className="relative overflow-hidden bg-night-gradient py-20 lg:py-28">
-      <div className="pointer-events-none absolute -top-32 right-1/4 h-[400px] w-[400px] rounded-full bg-gold/15 blur-[120px]" />
+    <section className="grain relative overflow-hidden bg-night-gradient pb-16 pt-14 sm:pb-20 sm:pt-20 lg:pb-28 lg:pt-24">
+      <div className="orb -top-32 right-[10%] h-[420px] w-[420px] bg-gold/20" />
+      <div className="orb -bottom-40 -left-20 h-[360px] w-[360px] bg-bordeaux/30 [animation-delay:-7s]" />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.04)_1px,transparent_1px)] bg-[size:calc(100%/6)_100%]"
+      />
       <div className="container-section relative">
-        <Reveal className="max-w-3xl">
+        <div className="max-w-4xl">
           {eyebrow && (
-            <p className="mb-3 text-sm font-semibold uppercase tracking-wider text-gold">
-              {eyebrow}
-            </p>
+            <Reveal>
+              <p className="eyebrow mb-5 text-gold">{eyebrow}</p>
+            </Reveal>
           )}
-          <h1 className="font-display text-4xl leading-tight tracking-tight-56 md:text-6xl">
+          <SplitReveal
+            as="h1"
+            on="load"
+            className="font-display text-[2.9rem] uppercase leading-[0.95] sm:text-6xl lg:text-7xl 2.5xl:text-8xl"
+          >
             {title}
-          </h1>
+          </SplitReveal>
           {description && (
-            <p className="mt-6 text-lg text-ivory/70 md:text-xl">{description}</p>
+            <Reveal delay={0.25}>
+              <p className="mt-6 max-w-2xl text-lg text-ivory/75 md:text-xl">{description}</p>
+            </Reveal>
           )}
-        </Reveal>
+        </div>
       </div>
     </section>
   );

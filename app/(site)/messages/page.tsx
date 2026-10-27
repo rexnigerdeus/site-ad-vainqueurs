@@ -38,7 +38,7 @@ export default async function MessagesPage() {
       <section className="bg-ivory py-12 text-night lg:py-20">
         <div className="container-section">
           <Reveal className="mb-8">
-            <h2 className="font-display text-2xl tracking-tight-48 md:text-3xl">
+            <h2 className="font-display text-2xl md:text-3xl">
               Derniers cultes
             </h2>
             <p className="mt-2 text-night/60">
@@ -61,7 +61,7 @@ export default async function MessagesPage() {
         <section className="bg-ivory pb-12 text-night lg:pb-20">
           <div className="container-section">
             <Reveal className="mb-8">
-              <h2 className="font-display text-2xl tracking-tight-48 md:text-3xl">
+              <h2 className="font-display text-2xl md:text-3xl">
                 Autres prédications
               </h2>
             </Reveal>
@@ -107,7 +107,7 @@ function SermonGrid({ sermons }: { sermons: Sermon[] }) {
                   {s.theme}
                 </span>
               )}
-              <h3 className="font-display text-xl leading-snug tracking-tight-48">
+              <h3 className="font-display text-xl leading-snug">
                 {s.title}
               </h3>
               <p className="mt-2 text-sm text-night/60">

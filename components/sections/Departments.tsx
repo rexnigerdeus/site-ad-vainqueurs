@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { Reveal } from "@/components/motion/Reveal";
+import { SplitReveal } from "@/components/motion/SplitReveal";
 import type { Department } from "@/lib/sanity/queries";
 
 const FALLBACK_DEPARTMENTS = [
@@ -30,14 +31,12 @@ export function Departments({ departments }: { departments?: Department[] }) {
   return (
     <section className="bg-night py-20 lg:py-28">
       <div className="container-section">
-        <Reveal className="mb-10 text-center">
-          <p className="mb-3 text-sm font-semibold uppercase tracking-wider text-gold">
-            Nos départements
-          </p>
-          <h2 className="font-display text-3xl tracking-tight-48 md:text-4xl">
+        <div className="mb-10 text-center">
+          <p className="eyebrow mb-4 justify-center text-gold">Nos départements</p>
+          <SplitReveal className="font-display text-4xl uppercase leading-[0.95] md:text-5xl">
             Une église organisée pour servir
-          </h2>
-        </Reveal>
+          </SplitReveal>
+        </div>
       </div>
 
       <Reveal className="relative">

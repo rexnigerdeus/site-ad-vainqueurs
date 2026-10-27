@@ -33,7 +33,7 @@ export default async function ContactPage() {
         <div className="container-section grid gap-12 lg:grid-cols-2">
           {/* Coordonnées */}
           <Reveal>
-            <h2 className="font-display text-2xl tracking-tight-48 md:text-3xl">
+            <h2 className="font-display text-2xl md:text-3xl">
               Nos coordonnées
             </h2>
             <ul className="mt-8 space-y-5">
@@ -119,7 +119,7 @@ export default async function ContactPage() {
 
           {/* Formulaire */}
           <Reveal delay={0.1}>
-            <h2 className="font-display text-2xl tracking-tight-48 md:text-3xl">
+            <h2 className="font-display text-2xl md:text-3xl">
               Envoyez-nous un message
             </h2>
             <p className="mt-3 text-ivory/70">

@@ -6,7 +6,8 @@
  * siteSettings n'a encore été créé dans le Studio.
  */
 import { getSiteSettings, type SiteSettings } from "@/lib/sanity/queries";
-import { CHURCH } from "@/lib/church";
+import { CHURCH, REGULAR_SERVICE_HOURS } from "@/lib/church";
+import { isPenielSeason, PENIEL_SERVICE_HOURS } from "@/lib/peniel";
 
 export type ResolvedSettings = {
   name: string;
@@ -40,12 +41,19 @@ const FALLBACK: ResolvedSettings = {
   email: CHURCH.email,
   social: { ...CHURCH.social },
   donations: { ...CHURCH.donations },
-  serviceHours:
-    "Culte : dimanche 07h00 – 10h00 · Jeunes : dimanche dès 15h00 · Jeûne et prière : 1er dimanche du mois dès 07h00 · Veillée : dernier vendredi du mois à 21h00",
+  serviceHours: REGULAR_SERVICE_HOURS,
   mapQuery: "Vridi Port-Bouet Abidjan",
 };
 
+/** Pendant PENIEL, les horaires PENIEL priment sur ceux saisis dans Sanity. */
 export async function getSettings(): Promise<ResolvedSettings> {
+  const settings = await getSettingsFromSanity();
+  return isPenielSeason()
+    ? { ...settings, serviceHours: PENIEL_SERVICE_HOURS }
+    : settings;
+}
+
+async function getSettingsFromSanity(): Promise<ResolvedSettings> {
   try {
     const s = await getSiteSettings();
     if (!s) return FALLBACK;

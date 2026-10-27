@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/motion/Reveal";
+import { SplitReveal } from "@/components/motion/SplitReveal";
 import { formatDateFr } from "@/lib/utils";
 import type { Event, PageContent } from "@/lib/sanity/queries";
 
@@ -14,10 +15,10 @@ export function Hero({
   header?: PageContent["header"];
 }) {
   return (
-    <section id="hero" className="relative overflow-hidden bg-night-gradient">
+    <section id="hero" className="grain relative overflow-hidden bg-night-gradient">
       {/* Décor lumineux */}
-      <div className="pointer-events-none absolute -top-32 left-1/2 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-gold/20 blur-[120px]" />
-      <div className="pointer-events-none absolute bottom-0 right-0 h-[400px] w-[400px] rounded-full bg-bordeaux/20 blur-[100px]" />
+      <div className="orb -top-32 left-[calc(50%-300px)] h-[600px] w-[600px] bg-gold/20" />
+      <div className="orb bottom-0 right-0 h-[400px] w-[400px] bg-bordeaux/25 [animation-delay:-9s]" />
 
       <div className="container-section relative grid min-h-[80vh] place-items-center py-20 text-center lg:py-28">
         <div className="mx-auto max-w-4xl">
@@ -34,19 +35,18 @@ export function Hero({
             </p>
           </Reveal>
 
-          <Reveal delay={0.1}>
-            <h1 className="font-display text-4xl leading-[1.05] tracking-tight-56 text-ivory sm:text-5xl md:text-6xl lg:text-7xl 2.5xl:text-8xl">
-              {header?.title || (
-                <>
-                  Une communauté qui{" "}
-                  <span className="bg-gold-gradient bg-clip-text text-transparent">
-                    vainc
-                  </span>{" "}
-                  par la foi
-                </>
-              )}
-            </h1>
-          </Reveal>
+          <SplitReveal
+            as="h1"
+            on="load"
+            delay={0.1}
+            className="font-display text-[2.9rem] uppercase leading-[0.95] text-ivory sm:text-6xl md:text-7xl lg:text-8xl 2.5xl:text-9xl"
+          >
+            {header?.title || (
+              <>
+                Une communauté qui <span className="text-gold">vainc</span> par la foi
+              </>
+            )}
+          </SplitReveal>
 
           <Reveal delay={0.2}>
             <p className="mx-auto mt-6 max-w-2xl text-lg text-ivory/70 md:text-xl">

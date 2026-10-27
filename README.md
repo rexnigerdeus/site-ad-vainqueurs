@@ -9,6 +9,7 @@ Site institutionnel du Temple des Assemblées de Dieu — Temple des Vainqueurs,
 - **Tailwind CSS v3** + design tokens (couleurs `gold`/`night`/`ivory`/`bordeaux`)
 - **Radix UI** + composants shadcn-style (Button, Card, Accordion, Tabs, Input)
 - **Framer Motion** (animations au scroll — Reveal, Stagger, Parallax)
+- **GSAP** + ScrollTrigger + SplitText (titres révélés mot à mot, bandeaux défilants, compteurs, parallaxe) — toujours importer depuis `components/motion/gsap.ts`, et ne jamais mettre de `transition-transform` CSS sur un élément animé par GSAP
 - **lucide-react** (icônes)
 - **next/font** (Inter + Cormorant Garamond)
 - **zod** (validation formulaire)
@@ -64,6 +65,15 @@ Container fluide : `.container-section` (max-w-10/12, px responsive).
 - **Animations au scroll** — composants `Reveal` / `StaggerGroup` / `Parallax`
 - **FAQ accordéon accessible** — Radix Accordion
 - **Bouton WhatsApp flottant** — apparaît après 600px de scroll
+
+## PENIEL 2026 : bascule automatique
+
+Tout part de `lib/peniel.ts` (thème, sous-thèmes, programme, dates en heure d'Abidjan) :
+
+- **avant le samedi 31 octobre** : couverture PENIEL en tête de l'accueil + compte à rebours (accueil) et « coming soon » réduit (page PENIEL) ;
+- **à partir du 31 octobre** : les comptes à rebours disparaissent d'eux-mêmes ;
+- **jusqu'à la fin du 29 novembre** : le programme PENIEL remplace le programme habituel partout (Activités, Contact, pied de page, « Venez nous visiter », chatbot `api/_chatbot_data.py`) ;
+- **ensuite** : retour automatique à l'en-tête et au programme habituels (`REGULAR_PROGRAM` dans `lib/church.ts`).
 
 ## Installation
 

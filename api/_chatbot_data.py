@@ -18,6 +18,32 @@ CARTE = "https://www.google.com/maps/search/?api=1&query=Temple+des+Vainqueurs+V
 # Heure de la veillée du dernier vendredi du mois (ex: "20h00"). None = pas d'heure affichée.
 HEURE_VEILLEE = "21h00"
 
+# ---------------------------------------------------------------------------
+# PENIEL 2026 : du 1er au 29 novembre, ce programme remplace les rendez-vous habituels.
+# (Même source que lib/peniel.ts côté site.)
+# ---------------------------------------------------------------------------
+PENIEL_DEBUT = date(2026, 11, 1)
+PENIEL_FIN = date(2026, 11, 29)
+
+# L'affiche ne donne pas l'heure de la veillée PENIEL du 27 novembre. None = pas d'heure affichée.
+HEURE_VEILLEE_PENIEL = None
+
+HORAIRES_PENIEL = [
+    "Du lundi au vendredi : prière de 5h30 à 6h30, de 12h30 à 13h30 et de 18h30 à 19h30",
+    "Le samedi : prière de 5h30 à 6h30, puis de 16h30 à 18h00",
+    "Le dimanche : culte de louange et de célébration de 7h00 à 10h30, puis rencontre du soir de 16h30 à 18h30",
+    "Le vendredi 27 novembre 2026 : veillée de prière",
+]
+
+
+def en_peniel(d):
+    return PENIEL_DEBUT <= d <= PENIEL_FIN
+
+
+def prochain_dimanche(aujourdhui):
+    """Le dimanche qui vient (aujourd'hui s'il s'agit d'un dimanche)."""
+    return aujourdhui + timedelta(days=(6 - aujourdhui.weekday()) % 7)
+
 # Repère pour trouver l'église (ex: "à côté de ..."). None = non affiché.
 REPERE_ADRESSE = None
 
@@ -61,13 +87,26 @@ def reponse_prochaines_dates(aujourdhui=None):
     aujourdhui = aujourdhui or date.today()
     jeune = prochaine_date(premier_dimanche, aujourdhui)
     veillee = prochaine_date(dernier_vendredi, aujourdhui)
-    heure_v = f" à {HEURE_VEILLEE}" if HEURE_VEILLEE else ""
-    return (
-        f"• Prochain jeûne et prière : {date_longue(jeune)}, à partir de 7h00 "
-        f"(chaque premier dimanche du mois).\n"
-        f"• Prochaine veillée : {date_longue(veillee)}{heure_v} "
-        f"(chaque dernier vendredi du mois)."
-    )
+    if en_peniel(aujourdhui) or en_peniel(jeune):
+        ligne_jeune = (
+            f"• PENIEL 2026 : 4 semaines de jeûne et de prière, du {date_longue(PENIEL_DEBUT)} "
+            f"au {date_longue(PENIEL_FIN)}."
+        )
+    else:
+        ligne_jeune = (
+            f"• Prochain jeûne et prière : {date_longue(jeune)}, à partir de 7h00 "
+            f"(chaque premier dimanche du mois)."
+        )
+    if en_peniel(veillee):
+        heure_v = f" à {HEURE_VEILLEE_PENIEL}" if HEURE_VEILLEE_PENIEL else ""
+        ligne_veillee = f"• Prochaine veillée : {date_longue(veillee)}{heure_v} (veillée de prière de PENIEL)."
+    else:
+        heure_v = f" à {HEURE_VEILLEE}" if HEURE_VEILLEE else ""
+        ligne_veillee = (
+            f"• Prochaine veillée : {date_longue(veillee)}{heure_v} "
+            f"(chaque dernier vendredi du mois)."
+        )
+    return f"{ligne_jeune}\n{ligne_veillee}"
 
 
 # ---------------------------------------------------------------------------
@@ -76,13 +115,12 @@ def reponse_prochaines_dates(aujourdhui=None):
 EVENEMENTS = [
     {
         "titre": "PENIEL 2026 — 4 semaines de jeûne et de prière (« Marche devant ma face et sois intègre », Genèse 17:1)",
-        "debut": date(2026, 11, 1),
-        "fin": date(2026, 11, 29),
+        "debut": PENIEL_DEBUT,
+        "fin": PENIEL_FIN,
         "details": [
-            "Du lundi au vendredi : prières de 5h30 à 6h30, de 12h30 à 13h30 et de 18h30 à 19h30",
-            "Le samedi : prières de 5h30 à 6h30, puis de 16h30 à 18h00",
-            "Le dimanche : culte de louange et de célébration de 7h00 à 10h30, puis rencontre du soir de 16h30 à 18h30",
-            "Veillée de prière le vendredi 27 novembre 2026",
+            "Lancement le samedi 31 octobre 2026",
+            *HORAIRES_PENIEL,
+            "Sous-thèmes : « Ton Dieu ne t'a pas oublié », « Ne t'arrête pas », « Sois intègre », « Ton Dieu t'annonce quelque chose de grand »",
         ],
     },
 ]
@@ -110,15 +148,47 @@ def reponse_adresse():
     return texte
 
 
-def reponse_horaires():
+def reponse_horaires(aujourdhui=None):
+    aujourdhui = aujourdhui or date.today()
+    if en_peniel(aujourdhui):
+        return (
+            "Du 1er au 29 novembre, c'est PENIEL : toute l'église suit ce programme.\n"
+            + "\n".join(f"• {x}" for x in HORAIRES_PENIEL)
+        )
     veillee = f" à {HEURE_VEILLEE}" if HEURE_VEILLEE else ""
-    return (
+    texte = (
         "Voici nos rendez-vous :\n"
         "• Chaque dimanche : culte de 7h00 à 10h00\n"
         "• Chaque dimanche : les jeunes, à partir de 15h00\n"
         "• Chaque premier dimanche du mois : jeûne et prière, à partir de 7h00\n"
         f"• Chaque dernier vendredi du mois : veillée{veillee}"
     )
+    if aujourdhui < PENIEL_DEBUT:
+        texte += (
+            "\n\nÀ partir du dimanche 1er novembre 2026 et jusqu'au 29 novembre, c'est PENIEL :\n"
+            + "\n".join(f"• {x}" for x in HORAIRES_PENIEL)
+        )
+    return texte
+
+
+def reponse_culte_dimanche(aujourdhui=None):
+    aujourdhui = aujourdhui or date.today()
+    if en_peniel(prochain_dimanche(aujourdhui)):
+        return (
+            "Pendant PENIEL (du 1er au 29 novembre), le culte de louange et de célébration a lieu "
+            "le dimanche de 7h00 à 10h30, suivi d'une rencontre du soir de 16h30 à 18h30."
+        )
+    return "Le culte a lieu chaque dimanche de 7h00 à 10h00."
+
+
+def reponse_jeunes(aujourdhui=None):
+    aujourdhui = aujourdhui or date.today()
+    if en_peniel(prochain_dimanche(aujourdhui)):
+        return (
+            "Pendant PENIEL (du 1er au 29 novembre), les jeunes suivent le programme de toute l'église. "
+            "Les rencontres des jeunes du dimanche, à partir de 15h00, reprennent ensuite."
+        )
+    return "Oui ! Les jeunes se retrouvent chaque dimanche à partir de 15h00 au Temple des Vainqueurs."
 
 
 # ---------------------------------------------------------------------------
@@ -136,12 +206,12 @@ QUESTIONS = [
     {
         "id": "culte-dimanche",
         "question": "À quelle heure est le culte du dimanche ?",
-        "answer": "Le culte a lieu chaque dimanche de 7h00 à 10h00.",
+        "answer": reponse_culte_dimanche,
     },
     {
         "id": "jeunes",
         "question": "Y a-t-il des activités pour les jeunes ?",
-        "answer": "Oui ! Les jeunes se retrouvent chaque dimanche à partir de 15h00 au Temple des Vainqueurs.",
+        "answer": reponse_jeunes,
     },
     {
         "id": "prochaines-dates",

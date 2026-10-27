@@ -9,6 +9,9 @@ import { GalleryTeaser } from "@/components/sections/GalleryTeaser";
 import { Testimonials } from "@/components/sections/Testimonials";
 import { CtaVisit } from "@/components/sections/CtaVisit";
 import { Faq } from "@/components/sections/Faq";
+import { PenielCover } from "@/components/peniel/PenielCover";
+import { PenielMarquee } from "@/components/peniel/PenielMarquee";
+import { PenielSpotlight } from "@/components/peniel/PenielSpotlight";
 import {
   getUpcomingEvents,
   getAlbums,
@@ -17,8 +20,8 @@ import {
   getDepartments,
   getTestimonials,
   getPageContent,
-  getPenielEvent,
 } from "@/lib/sanity/queries";
+import { penielPhase } from "@/lib/peniel";
 import { getSettings } from "@/lib/sanity/settings";
 import { getLatestSermons } from "@/lib/youtube";
 import type { Metadata } from "next";
@@ -44,7 +47,6 @@ export default async function HomePage() {
     testimonials,
     homeContent,
     settings,
-    penielEvent,
   ] = await Promise.all([
     getUpcomingEvents(8).catch(() => []),
     getLatestSermons(4).catch(() => []),
@@ -55,14 +57,24 @@ export default async function HomePage() {
     getTestimonials().catch(() => []),
     getPageContent("home").catch(() => null),
     getSettings(),
-    getPenielEvent().catch(() => null),
   ]);
+
+  // Pendant PENIEL (jusqu'au 29 novembre inclus), la couverture remplace l'en-tête habituel.
+  const phase = penielPhase();
 
   return (
     <>
-      <Hero nextEvent={events[0]} header={homeContent?.header} />
+      {phase === "over" ? (
+        <Hero nextEvent={events[0]} header={homeContent?.header} />
+      ) : (
+        <>
+          <PenielCover />
+          {phase === "teaser" && <PenielCountdown variant="banner" />}
+          <PenielMarquee />
+          <PenielSpotlight />
+        </>
+      )}
       <UpcomingEvents events={events} />
-      <PenielCountdown targetDate={penielEvent?.date} />
       <AboutTeaser
         values={homeContent?.values}
         heroTitle={homeContent?.heroTitle}
