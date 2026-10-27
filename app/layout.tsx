@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Anton, Bebas_Neue, Great_Vibes, Poppins } from "next/font/google";
 import "./globals.css";
-import { siteConfig, jsonLdOrganization } from "@/lib/site";
+import { siteConfig, buildMetadata, jsonLdOrganization, jsonLdWebsite } from "@/lib/site";
 import { ScrollProgress } from "@/components/motion/ScrollProgress";
 
 /**
@@ -39,48 +39,40 @@ const greatVibes = Great_Vibes({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL(siteConfig.url),
-  title: {
-    default: `${siteConfig.name} — Assemblées de Dieu, Abidjan Port-Bouët`,
-    template: `%s — ${siteConfig.name}`,
-  },
-  description: siteConfig.description,
-  keywords: [
-    "église",
-    "Assemblées de Dieu",
-    "Abidjan",
-    "Port-Bouët",
-    "Vridi",
-    "Temple des Vainqueurs",
-    "prédications",
-    "culte",
-    "évangélique",
-    "Côte d'Ivoire",
-  ],
-  authors: [{ name: siteConfig.name }],
-  openGraph: {
-    title: siteConfig.name,
-    description: siteConfig.description,
-    url: siteConfig.url,
-    siteName: siteConfig.name,
-    locale: siteConfig.locale,
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: siteConfig.name,
-    description: siteConfig.description,
-  },
-  alternates: { canonical: "/" },
-  robots: { index: true, follow: true },
-  icons: {
-    icon: [
-      { url: "/logo.png", type: "image/png" },
-    ],
-    apple: [{ url: "/logo.png", sizes: "180x180", type: "image/png" }],
-  },
-};
+const KEYWORDS = [
+  "église",
+  "Assemblées de Dieu",
+  "Abidjan",
+  "Port-Bouët",
+  "Vridi",
+  "Temple des Vainqueurs",
+  "prédications",
+  "culte",
+  "évangélique",
+  "Côte d'Ivoire",
+  "AD Vainqueurs",
+  "PENIEL",
+  "jeûne et prière",
+];
+// Calculé à chaque rendu : l'aperçu de partage par défaut suit la période PENIEL.
+export function generateMetadata(): Metadata {
+  return {
+    metadataBase: new URL(siteConfig.url),
+    ...buildMetadata({ description: siteConfig.description }),
+    title: {
+      default: `${siteConfig.name} — Assemblées de Dieu, Abidjan Port-Bouët`,
+      template: `%s — ${siteConfig.name}`,
+    },
+    keywords: KEYWORDS,
+    authors: [{ name: siteConfig.name }],
+    robots: { index: true, follow: true },
+    icons: {
+      icon: [{ url: "/logo.png", type: "image/png" }],
+      apple: [{ url: "/logo.png", sizes: "180x180", type: "image/png" }],
+    },
+  };
+}
+
 
 export const viewport: Viewport = {
   themeColor: "#0B1E3F",
@@ -101,7 +93,7 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdOrganization) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify([jsonLdOrganization, jsonLdWebsite]) }}
         />
         <ScrollProgress />
         {children}

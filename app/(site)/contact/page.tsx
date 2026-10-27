@@ -8,7 +8,7 @@ import { getPageContent } from "@/lib/sanity/queries";
 import { pageMetadata } from "@/lib/sanity/metadata";
 
 export function generateMetadata() {
-  return pageMetadata("contact", {
+  return pageMetadata("contact", "/contact", {
     title: "Contact",
     description:
       "Contactez le Temple des Vainqueurs — formulaire, téléphone, WhatsApp, adresse à Vridi, Port-Bouët, Abidjan.",

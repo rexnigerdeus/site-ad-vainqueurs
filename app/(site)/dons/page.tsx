@@ -6,7 +6,7 @@ import { getPageContent } from "@/lib/sanity/queries";
 import { pageMetadata } from "@/lib/sanity/metadata";
 
 export function generateMetadata() {
-  return pageMetadata("donations", {
+  return pageMetadata("donations", "/dons", {
     title: "Dons",
     description:
       "Soutenez le ministère du Temple des Vainqueurs par Wave ou Orange Money.",

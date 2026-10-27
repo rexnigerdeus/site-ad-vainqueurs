@@ -11,7 +11,7 @@ import { REGULAR_PROGRAM } from "@/lib/church";
 import { isPenielSeason, PENIEL } from "@/lib/peniel";
 
 export function generateMetadata() {
-  return pageMetadata("activities", {
+  return pageMetadata("activities", "/activites", {
     title: "Activités & Galerie",
     description:
       "Cultes du dimanche, jeûne et prière, veillées, rencontres des jeunes, événements spéciaux et albums photos du Temple des Vainqueurs.",

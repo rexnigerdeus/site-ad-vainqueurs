@@ -4,6 +4,7 @@ import { ArrowLeft } from "lucide-react";
 import { Reveal } from "@/components/motion/Reveal";
 import { getAlbums, getAlbumBySlug, type Album } from "@/lib/sanity/queries";
 import { formatDateFr } from "@/lib/utils";
+import { buildMetadata, siteConfig } from "@/lib/site";
 import { notFound } from "next/navigation";
 
 type Props = { params: Promise<{ album: string }> };
@@ -17,7 +18,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { album: slug } = await params;
   const album = await getAlbumBySlug(slug).catch(() => null);
   if (!album) return { title: "Album introuvable" };
-  return { title: album.title, description: `Album du ${formatDateFr(album.date)}` };
+  return buildMetadata({
+    title: album.title,
+    description: `Album du ${formatDateFr(album.date)} — ${siteConfig.name}`,
+    path: `/galerie/${slug}`,
+  });
 }
 
 export default async function AlbumPage({ params }: Props) {

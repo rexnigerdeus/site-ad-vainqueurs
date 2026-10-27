@@ -11,7 +11,7 @@ Site institutionnel du Temple des Assemblées de Dieu — Temple des Vainqueurs,
 - **Framer Motion** (animations au scroll — Reveal, Stagger, Parallax)
 - **GSAP** + ScrollTrigger + SplitText (titres révélés mot à mot, bandeaux défilants, compteurs, parallaxe) — toujours importer depuis `components/motion/gsap.ts`, et ne jamais mettre de `transition-transform` CSS sur un élément animé par GSAP
 - **lucide-react** (icônes)
-- **next/font** (Inter + Cormorant Garamond)
+- **next/font** (Poppins, Anton, Bebas Neue, Great Vibes)
 - **zod** (validation formulaire)
 
 ## Structure
@@ -74,6 +74,13 @@ Tout part de `lib/peniel.ts` (thème, sous-thèmes, programme, dates en heure d'
 - **à partir du 31 octobre** : les comptes à rebours disparaissent d'eux-mêmes ;
 - **jusqu'à la fin du 29 novembre** : le programme PENIEL remplace le programme habituel partout (Activités, Contact, pied de page, « Venez nous visiter », chatbot `api/_chatbot_data.py`) ;
 - **ensuite** : retour automatique à l'en-tête et au programme habituels (`REGULAR_PROGRAM` dans `lib/church.ts`).
+
+## SEO et aperçu de partage
+
+- Domaine officiel : **https://www.advainqueurs.org** (`CHURCH.domain` dans `lib/church.ts`). `advainqueurs.org` et `site-ad-vainqueurs.vercel.app` y redirigent.
+- Chaque page passe par `buildMetadata()` (`lib/site.ts`) : lien canonique propre à la page + aperçu de partage complet (Next remplace l'objet `openGraph` du layout au lieu de le fusionner).
+- Aperçu de partage selon la date : image « lancement » jusqu'au 31 octobre, image PENIEL jusqu'au 29 novembre, puis image de l'église. Les images (1200 x 630) sont dans `public/og/`, leur source dans `scripts/og/og.html`.
+- Données structurées : église + site sur toutes les pages, événement PENIEL sur `/peniel`.
 
 ## Installation
 
